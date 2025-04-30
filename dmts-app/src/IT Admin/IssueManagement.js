@@ -283,15 +283,32 @@ const IssueManagement = () => {
 
 
 
-  const handleDelete = async (issueId) => {
-    if (window.confirm('Are you sure you want to delete this issue?')) {
-      try {
-        await issueAPI.deleteIssue(issueId);
-        refreshIssues();
-      } catch (err) {
-        setError('Failed to delete issue. Please try again.');
-      }
+  // State for delete confirmation dialog
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [issueToDelete, setIssueToDelete] = useState(null);
+
+  const handleDeleteRequest = (issueId) => {
+    setIssueToDelete(issueId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!issueToDelete) return;
+    try {
+      await issueAPI.deleteIssue(issueToDelete);
+      setSuccess('Issue deleted successfully!');
+      refreshIssues();
+    } catch (err) {
+      setError('Failed to delete issue. Please try again.');
+    } finally {
+      setDeleteDialogOpen(false);
+      setIssueToDelete(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setIssueToDelete(null);
   };
 
   const getPriorityColor = (priority) => {
@@ -331,24 +348,25 @@ const IssueManagement = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Sidebar />
-      <Box sx={{ flexGrow: 1, p: 3, ml: '250px', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <BugReportIcon sx={{ color: theme.palette.primary.main, mr: 2, fontSize: 32 }} />
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              sx={{ 
-                fontWeight: 600,
-                color: theme.palette.text.primary,
-                fontFamily: "'Poppins', sans-serif",
-              }}
-            >
-              Issue Management
-            </Typography>
-          </Box>
+    <>
+      <Box sx={{ display: 'flex' }}>
+        <Sidebar />
+        <Box sx={{ flexGrow: 1, p: 3, ml: '250px', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <BugReportIcon sx={{ color: theme.palette.primary.main, mr: 2, fontSize: 32 }} />
+              <Typography 
+                variant="h4" 
+                component="h1" 
+                sx={{ 
+                  fontWeight: 600,
+                  color: theme.palette.text.primary,
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                Issue Management
+              </Typography>
+            </Box>
 
         </Box>
 
@@ -592,7 +610,7 @@ const IssueManagement = () => {
                       </Tooltip>
                       <Tooltip title="Delete Issue">
                         <IconButton
-                          onClick={() => handleDelete(issue.id)}
+                          onClick={() => handleDeleteRequest(issue.id)}
                           sx={{ color: theme.palette.error.main }}
                         >
                           <DeleteIcon />
@@ -679,9 +697,35 @@ const IssueManagement = () => {
             </DialogActions>
         </Dialog>
 
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title" sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: 600 }}>
+          Confirm Deletion
+        </DialogTitle>
+        <DialogContent>
+          <Typography id="delete-dialog-description" sx={{ fontFamily: "'Poppins', sans-serif" }}>
+            Are you sure you want to delete this issue? This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} sx={{ color: theme.palette.text.secondary }}>
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+       </Dialog>
       </Box>
     </Box>
+    </>
   );
-};
+}
+
 
 export default IssueManagement;

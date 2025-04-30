@@ -149,6 +149,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://127.0.0.1:3001",
 ]
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '192.168.100.125',
+]
 
 CORS_ALLOW_CREDENTIALS = True
 

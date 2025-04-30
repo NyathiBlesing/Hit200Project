@@ -35,6 +35,16 @@ class DeviceSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'cleared_at', 'cleared_by']
 
+    def validate_serial_number(self, value):
+        import re
+        pattern = r'^DEV-(LAP|DES|TAB|PHN|PRO|PRI|OTH)-\d{4}-\d{4}$'
+        if not re.match(pattern, value):
+            raise serializers.ValidationError(
+                "Serial number must be in the format DEV-TYPE-YYMM-XXXX (e.g., DEV-LAP-2504-1234) "
+                "where TYPE is LAP, DES, TAB, PHN, or OTH."
+            )
+        return value
+
     def validate_assigned_to_id(self, value):
         if value:
             try:
@@ -126,56 +136,19 @@ class MaintenanceSerializer(serializers.ModelSerializer):
         queryset=Device.objects.all()
     )
     device_name = serializers.CharField(source='device.name', read_only=True)
-    assigned_to_name = serializers.CharField(source='assigned_to.username', read_only=True)
-    assigned_to_id = serializers.IntegerField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Maintenance
         fields = [
             'id', 'serial_number', 'device_name', 'maintenance_date',
-            'maintenance_type', 'status', 'assigned_to', 'assigned_to_name',
-            'assigned_to_id', 'notes', 'cost', 'parts_replaced',
-            'next_maintenance_date', 'created_at', 'updated_at', 'completed_at'
+            'status', 'notes', 'created_at', 'updated_at'
         ]
-        read_only_fields = ['created_at', 'updated_at', 'completed_at']
-
-    def validate_assigned_to_id(self, value):
-        if value:
-            try:
-                CustomUser.objects.get(id=value)
-            except CustomUser.DoesNotExist:
-                raise serializers.ValidationError("User does not exist")
-        return value
+        read_only_fields = ['created_at', 'updated_at']
 
     def validate_maintenance_date(self, value):
         if value < timezone.now().date():
             raise serializers.ValidationError("Maintenance date cannot be in the past")
         return value
-
-    def validate_next_maintenance_date(self, value):
-        if value and value < timezone.now().date():
-            raise serializers.ValidationError("Next maintenance date cannot be in the past")
-        return value
-
-    def create(self, validated_data):
-        assigned_to_id = validated_data.pop('assigned_to_id', None)
-        if assigned_to_id:
-            try:
-                user = CustomUser.objects.get(id=assigned_to_id)
-                validated_data['assigned_to'] = user
-            except CustomUser.DoesNotExist:
-                raise serializers.ValidationError("User does not exist")
-        return super().create(validated_data)
-
-    def update(self, instance, validated_data):
-        assigned_to_id = validated_data.pop('assigned_to_id', None)
-        if assigned_to_id is not None:
-            try:
-                user = CustomUser.objects.get(id=assigned_to_id)
-                instance.assigned_to = user
-            except CustomUser.DoesNotExist:
-                raise serializers.ValidationError("User does not exist")
-        return super().update(instance, validated_data)
 
 #Logs
 from rest_framework import serializers

@@ -46,45 +46,47 @@ import { useTheme } from '@mui/material/styles';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 
-const StyledTextField = styled(TextField)({
+const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: '8px',
     fontFamily: "'Poppins', sans-serif",
-    color: 'white',
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
     '& fieldset': {
-      borderColor: 'rgba(255, 255, 255, 0.23)',
+      borderColor: theme.palette.divider,
     },
     '&:hover fieldset': {
-      borderColor: 'rgba(255, 255, 255, 0.4)',
+      borderColor: theme.palette.primary.light,
     },
     '&.Mui-focused fieldset': {
-      borderColor: '#2563eb',
+      borderColor: theme.palette.primary.main,
     },
   },
   '& .MuiInputLabel-root': {
     fontFamily: "'Poppins', sans-serif",
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: theme.palette.text.secondary,
     '&.Mui-focused': {
-      color: '#2563eb',
+      color: theme.palette.primary.main,
     },
   },
-});
+}));
 
-const StyledSelect = styled(Select)({
+const StyledSelect = styled(Select)(({ theme }) => ({
   '& .MuiOutlinedInput-notchedOutline': {
-    borderColor: 'rgba(255, 255, 255, 0.23)',
+    borderColor: theme.palette.divider,
   },
   '&:hover .MuiOutlinedInput-notchedOutline': {
-    borderColor: 'rgba(255, 255, 255, 0.4)',
+    borderColor: theme.palette.primary.light,
   },
   '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    borderColor: '#2563eb',
+    borderColor: theme.palette.primary.main,
   },
-  color: 'white',
+  color: theme.palette.text.primary,
+  backgroundColor: theme.palette.background.paper,
   '& .MuiSelect-icon': {
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: theme.palette.text.secondary,
   },
-});
+}));
 
 const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : 'white',
@@ -98,7 +100,7 @@ const MaintenanceManagement = () => {
   const theme = useTheme();
   const [maintenances, setMaintenances] = useState([]);
   const [devices, setDevices] = useState([]);
-  const [users, setUsers] = useState([]);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -107,28 +109,21 @@ const MaintenanceManagement = () => {
   const [formData, setFormData] = useState({
     serial_number: '',
     maintenance_date: null,
-    maintenance_type: 'Routine',
     status: 'Scheduled',
-    assigned_to_id: '',
     notes: '',
-    cost: '',
-    parts_replaced: '',
-    next_maintenance_date: null,
   });
 
   // Fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [maintenancesData, devicesData, usersData] = await Promise.all([
+        const [maintenancesData, devicesData] = await Promise.all([
           maintenanceAPI.getMaintenance(),
           deviceAPI.getDevices(),
-          userAPI.getUsers(),
         ]);
         
         setMaintenances(maintenancesData);
         setDevices(devicesData);
-        setUsers(usersData);
       } catch (error) {
         console.error('Error fetching data:', error);
         setError("Failed to fetch data. Please try again later.");
@@ -145,26 +140,16 @@ const MaintenanceManagement = () => {
       setFormData({
         serial_number: maintenance.serial_number,
         maintenance_date: new Date(maintenance.maintenance_date),
-        maintenance_type: maintenance.maintenance_type,
         status: maintenance.status,
-        assigned_to_id: maintenance.assigned_to?.id || '',
         notes: maintenance.notes || '',
-        cost: maintenance.cost || '',
-        parts_replaced: maintenance.parts_replaced || '',
-        next_maintenance_date: maintenance.next_maintenance_date ? new Date(maintenance.next_maintenance_date) : null,
       });
     } else {
       setSelectedMaintenance(null);
       setFormData({
         serial_number: '',
         maintenance_date: null,
-        maintenance_type: 'Routine',
         status: 'Scheduled',
-        assigned_to_id: '',
         notes: '',
-        cost: '',
-        parts_replaced: '',
-        next_maintenance_date: null,
       });
     }
     setOpenDialog(true);
@@ -176,13 +161,8 @@ const MaintenanceManagement = () => {
     setFormData({
       serial_number: '',
       maintenance_date: null,
-      maintenance_type: 'Routine',
       status: 'Scheduled',
-      assigned_to_id: '',
       notes: '',
-      cost: '',
-      parts_replaced: '',
-      next_maintenance_date: null,
     });
   };
 
@@ -192,9 +172,6 @@ const MaintenanceManagement = () => {
       const formattedData = {
         ...formData,
         maintenance_date: formData.maintenance_date ? formData.maintenance_date.toISOString().split('T')[0] : null,
-        next_maintenance_date: formData.next_maintenance_date ? formData.next_maintenance_date.toISOString().split('T')[0] : null,
-        cost: formData.cost || null,
-        assigned_to_id: formData.assigned_to_id || null
       };
 
       if (selectedMaintenance) {
@@ -271,6 +248,7 @@ const MaintenanceManagement = () => {
     <Box sx={{ display: 'flex' }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, p: 3, ml: '250px', backgroundColor: theme.palette.background.default, minHeight: '100vh' }}>
+        {/* ...content remains the same... */}
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <BuildIcon sx={{ color: theme.palette.primary.main, mr: 2, fontSize: 32 }} />
@@ -341,11 +319,9 @@ const MaintenanceManagement = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ color: theme.palette.text.secondary }}>Device</TableCell>
-                    <TableCell sx={{ color: theme.palette.text.secondary }}>Type</TableCell>
                     <TableCell sx={{ color: theme.palette.text.secondary }}>Date</TableCell>
                     <TableCell sx={{ color: theme.palette.text.secondary }}>Status</TableCell>
-                    <TableCell sx={{ color: theme.palette.text.secondary }}>Assigned To</TableCell>
-                    <TableCell sx={{ color: theme.palette.text.secondary }}>Cost</TableCell>
+                    <TableCell sx={{ color: theme.palette.text.secondary }}>Notes</TableCell>
                     <TableCell sx={{ color: theme.palette.text.secondary }}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
@@ -355,21 +331,14 @@ const MaintenanceManagement = () => {
                       <TableCell>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                           <Typography variant="body2">{maintenance.device_name}</Typography>
-                          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+                          <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
                             SN: {maintenance.serial_number}
                           </Typography>
                         </Box>
                       </TableCell>
                       <TableCell>
-                        <Chip
-                          label={maintenance.maintenance_type}
-                          color={getMaintenanceTypeColor(maintenance.maintenance_type)}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <CalendarIcon sx={{ fontSize: 16, color: 'rgba(255, 255, 255, 0.7)' }} />
+                          <CalendarIcon sx={{ fontSize: 16, color: theme.palette.text.secondary }} />
                           <Typography variant="body2">
                             {new Date(maintenance.maintenance_date).toLocaleDateString()}
                           </Typography>
@@ -383,20 +352,9 @@ const MaintenanceManagement = () => {
                         />
                       </TableCell>
                       <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <PersonIcon sx={{ fontSize: 16, color: 'rgba(255, 255, 255, 0.7)' }} />
-                          <Typography variant="body2">
-                            {maintenance.assigned_to_name || 'Unassigned'}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <MoneyIcon sx={{ fontSize: 16, color: 'rgba(255, 255, 255, 0.7)' }} />
-                          <Typography variant="body2">
-                            {maintenance.cost ? `$${maintenance.cost}` : 'N/A'}
-                          </Typography>
-                        </Box>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.primary }}>
+                          {maintenance.notes || '-'}
+                        </Typography>
                       </TableCell>
                       <TableCell>
                         <Tooltip title="Edit Maintenance">
@@ -431,7 +389,7 @@ const MaintenanceManagement = () => {
           fullWidth
           PaperProps={{
             sx: {
-              backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : 'white',
+              backgroundColor: theme.palette.background.paper,
               backgroundImage: 'none',
             }
           }}
@@ -458,21 +416,6 @@ const MaintenanceManagement = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Maintenance Type</InputLabel>
-                  <Select
-                    value={formData.maintenance_type}
-                    onChange={(e) => setFormData({ ...formData, maintenance_type: e.target.value })}
-                    label="Maintenance Type"
-                  >
-                    <MenuItem value="Preventive">Preventive</MenuItem>
-                    <MenuItem value="Corrective">Corrective</MenuItem>
-                    <MenuItem value="Emergency">Emergency</MenuItem>
-                    <MenuItem value="Routine">Routine</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     label="Maintenance Date"
@@ -491,37 +434,9 @@ const MaintenanceManagement = () => {
                     label="Status"
                   >
                     <MenuItem value="Scheduled">Scheduled</MenuItem>
-                    <MenuItem value="In Progress">In Progress</MenuItem>
                     <MenuItem value="Completed">Completed</MenuItem>
-                    <MenuItem value="Cancelled">Cancelled</MenuItem>
                   </Select>
                 </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Assigned To</InputLabel>
-                  <Select
-                    value={formData.assigned_to_id}
-                    onChange={(e) => setFormData({ ...formData, assigned_to_id: e.target.value })}
-                    label="Assigned To"
-                  >
-                    <MenuItem value="">Unassigned</MenuItem>
-                    {users.map((user) => (
-                      <MenuItem key={user.id} value={user.id}>
-                        {user.username}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <StyledTextField
-                  fullWidth
-                  label="Cost"
-                  type="number"
-                  value={formData.cost}
-                  onChange={(e) => setFormData({ ...formData, cost: e.target.value })}
-                />
               </Grid>
               <Grid item xs={12}>
                 <StyledTextField
@@ -532,26 +447,6 @@ const MaintenanceManagement = () => {
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <StyledTextField
-                  fullWidth
-                  multiline
-                  rows={3}
-                  label="Parts Replaced"
-                  value={formData.parts_replaced}
-                  onChange={(e) => setFormData({ ...formData, parts_replaced: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    label="Next Maintenance Date"
-                    value={formData.next_maintenance_date}
-                    onChange={(newValue) => setFormData({ ...formData, next_maintenance_date: newValue })}
-                    renderInput={(params) => <StyledTextField {...params} fullWidth />}
-                  />
-                </LocalizationProvider>
               </Grid>
             </Grid>
           </DialogContent>
@@ -583,6 +478,7 @@ const MaintenanceManagement = () => {
       </Box>
     </Box>
   );
-};
+}
+;
 
 export default MaintenanceManagement; 

@@ -13,6 +13,7 @@ class Device(models.Model):
         ('Inactive', 'Inactive'),
         ('Maintenance', 'Maintenance'),
         ('Cleared', 'Cleared'),
+        ('Flagged', 'Flagged'),
     ]
 
     id = models.AutoField(primary_key=True)
@@ -64,7 +65,7 @@ class Device(models.Model):
                 recipient=previous_user,
                 type='DEVICE_CLEARANCE',
                 title='Device Cleared',
-                message=f'The device {self.name} ({self.serial_number}) assigned to you has been cleared by IT admin.',
+                message=f'The device {self.name} ({self.serial_number}) assigned to you has been cleared by Operations.',
                 related_device=self,
                 link=f'/devices/{self.id}'
             )
@@ -185,10 +186,11 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=15, unique=True, null=True, blank=True, default=None)
     department = models.CharField(max_length=100, null=True, blank=True)
     role = models.CharField(
-        max_length=10,
+        max_length=15,
         choices=[
             ('Admin', 'Admin'),
-            ('Employee', 'Employee')
+            ('Employee', 'Employee'),
+            ('Operations', 'Operations')
         ],
         default='Employee'
     )
@@ -217,116 +219,25 @@ from .models import Device
 class Maintenance(models.Model):
     MAINTENANCE_STATUS = [
         ('Scheduled', 'Scheduled'),
-        ('In Progress', 'In Progress'),
         ('Completed', 'Completed'),
-        ('Cancelled', 'Cancelled'),
-    ]
-
-    MAINTENANCE_TYPE = [
-        ('Preventive', 'Preventive'),
-        ('Corrective', 'Corrective'),
-        ('Emergency', 'Emergency'),
-        ('Routine', 'Routine'),
     ]
 
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name="maintenances")
     maintenance_date = models.DateField()
-    maintenance_type = models.CharField(max_length=20, choices=MAINTENANCE_TYPE, default='Routine')
     status = models.CharField(max_length=20, choices=MAINTENANCE_STATUS, default='Scheduled')
-    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.TextField(blank=True, null=True)
-    cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    parts_replaced = models.TextField(blank=True, null=True)
-    next_maintenance_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    completed_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return f"Maintenance for {self.device.serial_number} on {self.maintenance_date}"
+        return f"{self.device} - {self.maintenance_date}"
 
     def save(self, *args, **kwargs):
-        is_new = self._state.adding
-        old_status = None if is_new else Maintenance.objects.get(pk=self.pk).status
-        
-        if self.status == 'Completed' and not self.completed_at:
-            self.completed_at = timezone.now()
-        
+        # Only update updated_at if status is 'Completed'
+        if self.status == 'Completed':
+            self.updated_at = timezone.now()
         super().save(*args, **kwargs)
-
-        # Create notifications for status changes and new maintenance
-        if is_new:
-            # Notify IT admins about new maintenance
-            it_admins = CustomUser.objects.filter(is_staff=True)
-            for admin in it_admins:
-                if admin != self.assigned_to:  # Don't notify the assigned admin
-                    Notification.objects.create(
-                        recipient=admin,
-                        type='MAINTENANCE_SCHEDULED',
-                        title=f'New {self.maintenance_type} Maintenance Scheduled',
-                        message=f'A new {self.maintenance_type.lower()} maintenance has been scheduled for device {self.device.name} on {self.maintenance_date}.',
-                        related_device=self.device,
-                        link=f'/maintenance/{self.id}'
-                    )
-
-            # Notify the assigned technician
-            if self.assigned_to:
-                Notification.objects.create(
-                    recipient=self.assigned_to,
-                    type='MAINTENANCE_ASSIGNED',
-                    title='Maintenance Task Assigned',
-                    message=f'You have been assigned a {self.maintenance_type.lower()} maintenance task for device {self.device.name} scheduled for {self.maintenance_date}.',
-                    related_device=self.device,
-                    link=f'/maintenance/{self.id}'
-                )
-
-            # Notify the device owner if it's assigned to someone
-            if self.device.assigned_to:
-                Notification.objects.create(
-                    recipient=self.device.assigned_to,
-                    type='MAINTENANCE_SCHEDULED',
-                    title='Device Maintenance Scheduled',
-                    message=f'A {self.maintenance_type.lower()} maintenance has been scheduled for your device {self.device.name} on {self.maintenance_date}.',
-                    related_device=self.device,
-                    link=f'/maintenance/{self.id}'
-                )
-        
-        # Notify about status changes
-        elif old_status != self.status:
-            # Notify IT admins
-            it_admins = CustomUser.objects.filter(is_staff=True)
-            for admin in it_admins:
-                if admin != self.assigned_to:  # Don't notify the assigned admin
-                    Notification.objects.create(
-                        recipient=admin,
-                        type='MAINTENANCE_UPDATE',
-                        title='Maintenance Status Updated',
-                        message=f'The maintenance status for device {self.device.name} has been updated to {self.status}.',
-                        related_device=self.device,
-                        link=f'/maintenance/{self.id}'
-                    )
-
-            # Notify the assigned technician
-            if self.assigned_to:
-                Notification.objects.create(
-                    recipient=self.assigned_to,
-                    type='MAINTENANCE_UPDATE',
-                    title='Maintenance Status Updated',
-                    message=f'The maintenance task for device {self.device.name} has been updated to {self.status}.',
-                    related_device=self.device,
-                    link=f'/maintenance/{self.id}'
-                )
-
-            # Notify the device owner when maintenance is completed
-            if self.status == 'Completed' and self.device.assigned_to:
-                Notification.objects.create(
-                    recipient=self.device.assigned_to,
-                    type='MAINTENANCE_COMPLETED',
-                    title='Device Maintenance Completed',
-                    message=f'The maintenance for your device {self.device.name} has been completed.',
-                    related_device=self.device,
-                    link=f'/maintenance/{self.id}'
-                )
+        # All notification logic referencing removed fields has been deleted.
 
 #Logs
 from django.db import models

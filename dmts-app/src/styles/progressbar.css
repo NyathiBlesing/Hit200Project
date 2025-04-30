@@ -1,0 +1,16 @@
+/* Mini Progress Bar for Splash */
+.mini-progress-bar-container {
+  width: 120px;
+  height: 7px;
+  background: rgba(255,255,255,0.25);
+  border-radius: 6px;
+  margin-top: 32px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.13);
+}
+.mini-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #fff 0%, #90caf9 100%);
+  border-radius: 6px;
+  transition: width 0.1s linear;
+}

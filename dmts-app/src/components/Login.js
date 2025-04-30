@@ -15,7 +15,9 @@ import {
 import { styled } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { authAPI } from '../api/api';
-import { BASE_URL } from '../api/api';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(8),
@@ -58,7 +60,9 @@ const StyledTextField = styled(TextField)({
   },
 });
 
+
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const theme = useTheme();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -71,9 +75,13 @@ const Login = () => {
     const accessToken = localStorage.getItem("access_token");
     const role = localStorage.getItem("role");
     if (accessToken && role) {
-      role === "Admin"
-        ? navigate("/admin-dashboard")
-        : navigate("/employee-dashboard");
+      if (role === "Admin") {
+        navigate("/admin-dashboard");
+      } else if (role === "Operations") {
+        navigate("/operations-dashboard");
+      } else {
+        navigate("/employee-dashboard");
+      }
     }
   }, [navigate]);
 
@@ -112,6 +120,8 @@ const Login = () => {
 
       if (userData.role === "Admin") {
         navigate("/admin-dashboard");
+      } else if (userData.role === "Operations") {
+        navigate("/operations-dashboard");
       } else {
         navigate("/employee-dashboard");
       }
@@ -211,16 +221,29 @@ const Login = () => {
             />
             <StyledTextField
               margin="normal"
-            required
+              required
               fullWidth
               name="password"
               label="Password"
-            type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               autoComplete="current-password"
-            value={password}
+              value={password}
               onChange={handleInputChange}
               sx={{ mb: 3 }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                    tabIndex={-1}
+                    style={{ color: 'rgba(255,255,255,0.6)' }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                )
+              }}
             />
             <Button
               type="submit"

@@ -133,10 +133,18 @@ const NotificationBell = () => {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <Box sx={{ p: 2 }}>
+        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h6" sx={{ fontFamily: "'Poppins', sans-serif" }}>
             Notifications
           </Typography>
+          {notifications.length > 0 && (
+            <Button size="small" color="error" onClick={async () => {
+              await notificationAPI.clearAll();
+              fetchNotifications();
+            }}>
+              Clear All
+            </Button>
+          )}
         </Box>
         <Divider />
         {notifications.length === 0 ? (
@@ -149,7 +157,6 @@ const NotificationBell = () => {
           notifications.map((notification) => (
             <MenuItem
               key={notification.id}
-              onClick={() => handleNotificationClick(notification)}
               sx={{
                 py: 2,
                 px: 3,
@@ -158,9 +165,12 @@ const NotificationBell = () => {
                 '&:hover': {
                   backgroundColor: theme.palette.action.selected,
                 },
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1
               }}
             >
-              <Box sx={{ width: '100%' }}>
+              <Box sx={{ width: '100%' }} onClick={() => handleNotificationClick(notification)}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                   {!notification.read && (
                     <CircleIcon
@@ -181,15 +191,7 @@ const NotificationBell = () => {
                   >
                     {notification.title}
                   </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color: theme.palette.text.secondary,
-                      ml: 2,
-                    }}
-                  >
-                    {formatTimestamp(notification.created_at)}
-                  </Typography>
+
                 </Box>
                 <Typography
                   variant="body2"
@@ -289,6 +291,7 @@ const NotificationBell = () => {
           <Button onClick={handleDetailsClose}>
             Close
           </Button>
+
           {selectedNotification?.link && (
             <Button variant="contained" onClick={handleNavigate}>
               View Details

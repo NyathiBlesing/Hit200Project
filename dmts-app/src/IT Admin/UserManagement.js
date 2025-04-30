@@ -320,7 +320,7 @@ const UserManagement = () => {
                 >
                   <MenuItem value="">All Roles</MenuItem>
                   <MenuItem value="Admin">Admin</MenuItem>
-                  <MenuItem value="IT Admin">IT Admin</MenuItem>
+                  <MenuItem value="Operations">Operations</MenuItem>
                   <MenuItem value="Employee">Employee</MenuItem>
                 </Select>
               </FormControl>
@@ -576,6 +576,7 @@ const UserManagement = () => {
                 }}
               >
                 <MenuItem value="Admin">Admin</MenuItem>
+                <MenuItem value="Operations">Operations</MenuItem>
                 <MenuItem value="Employee">Employee</MenuItem>
               </TextField>
               <TextField

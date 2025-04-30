@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import Loading from "./components/Loading";
 import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,8 +12,10 @@ import AdminDashboard from "./IT Admin/Dashboard";
 import DeviceManagement from "./IT Admin/DeviceManagement";
 import UserManagement from "./IT Admin/UserManagement";
 import IssueManagement from "./IT Admin/IssueManagement";
-import MaintenanceManagement from "./IT Admin/MaintenanceManagement";
 import Reports from "./IT Admin/Reports";
+import OperationsDashboard from "./Operations/OperationsDashboard";
+import OperationsMaintenanceManagement from "./Operations/MaintenanceManagement";
+import DeviceClearance from "./Operations/DeviceClearance"; 
 import EmployeeDashboard from "./employees/EmployeeDashboard";
 import Feedback from "./employees/Feedback";
 import IssueReport from "./employees/IssueReport";
@@ -21,6 +24,13 @@ import AuditLogs from './IT Admin/AuditLogs';
 import Settings from './components/Settings';
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+
+  if (loading) {
+    return <Loading onFinish={() => setLoading(false)} />;
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -61,14 +71,6 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <IssueManagement />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/maintenance"
-          element={
-            <ProtectedRoute allowedRoles={["Admin"]}>
-              <MaintenanceManagement />
             </ProtectedRoute>
           }
         />
@@ -115,12 +117,38 @@ function App() {
           }
         />
 
+        {/* Operations Routes */}
+        <Route
+          path="/operations-dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["Operations"]}>
+              <OperationsDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/maintenance"
+          element={
+            <ProtectedRoute allowedRoles={["Operations"]}>
+              <OperationsMaintenanceManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/device-clearance"
+          element={
+            <ProtectedRoute allowedRoles={["Operations"]}>
+              <DeviceClearance />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Profile Page for Both */}
         {/* Settings Route */}
         <Route
           path="/settings"
           element={
-            <ProtectedRoute allowedRoles={["Admin", "Employee"]}>
+            <ProtectedRoute allowedRoles={["Admin", "Employee", "Operations"]}>
               <Settings />
             </ProtectedRoute>
           }

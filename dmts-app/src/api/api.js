@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
   withCredentials: true,
-  timeout: 10000, // 10 seconds timeout
+  timeout: 10000, 
 });
 
 let isRefreshing = false;
@@ -128,7 +128,8 @@ const handleApiError = (error, customMessage) => {
 export const deviceAPI = {
   getDevices: async () => {
     try {
-      const response = await axiosInstance.get('devices/');
+      // Always include cleared devices in the list
+      const response = await axiosInstance.get('devices/?include_cleared=true');
       return response.data;
     } catch (error) {
       console.error('Error fetching devices:', error);
@@ -517,14 +518,13 @@ export const auditLogAPI = {
 export const notificationAPI = {
   getNotifications: async () => {
     try {
-      const response = await axiosInstance.get('notifications/');
+      const response = await axiosInstance.get("notifications/");
       return response.data;
     } catch (error) {
       console.error('Error fetching notifications:', error);
       throw new Error(error.response?.data?.error || 'Failed to fetch notifications');
     }
   },
-
   markAsRead: async (notificationId) => {
     try {
       const response = await axiosInstance.post(`notifications/${notificationId}/mark_as_read/`);
@@ -534,7 +534,6 @@ export const notificationAPI = {
       throw new Error(error.response?.data?.error || 'Failed to mark notification as read');
     }
   },
-
   markAllAsRead: async () => {
     try {
       const response = await axiosInstance.post('notifications/mark_all_as_read/');
@@ -543,7 +542,24 @@ export const notificationAPI = {
       console.error('Error marking all notifications as read:', error);
       throw new Error(error.response?.data?.error || 'Failed to mark all notifications as read');
     }
+  },
+  clearAll: async () => {
+    const response = await axiosInstance.delete('notifications/');
+    return response.data;
   }
+};
+
+// Clearance API
+export const clearanceAPI = {
+  getLogs: async () => {
+    try {
+      const response = await axiosInstance.get('clearance-logs/');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching clearance logs:', error);
+      throw new Error(error.response?.data?.error || 'Failed to fetch clearance logs');
+    }
+  },
 };
 
 // Auth API

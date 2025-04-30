@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from .views import (
     SignupView, AccountSetupView, CreateUserView, DeviceViewSet, IssueViewSet, MaintenanceViewSet, AuditLogViewSet,
-    CustomUserViewSet, ClearanceViewSet, AssignedDevicesView,
+    CustomUserViewSet, ClearanceViewSet, AssignedDevicesView, ClearanceLogViewSet,
     download_device_report, download_issue_report, download_maintenance_report,
     DeviceBySerialView, NotificationViewSet,
     login_view
@@ -14,9 +14,9 @@ router = DefaultRouter()
 router.register(r'devices', DeviceViewSet, basename='device')
 router.register(r'issues', IssueViewSet, basename='issue')
 router.register(r'clearance', ClearanceViewSet, basename="clearance")
+router.register(r'clearance-logs', ClearanceLogViewSet, basename='clearance-log')
 router.register(r'maintenances', MaintenanceViewSet, basename='maintenance')
 router.register(r'audit-logs', AuditLogViewSet, basename='audit-log')
-
 router.register(r'notifications', NotificationViewSet, basename='notification')
 
 # Define all URL patterns

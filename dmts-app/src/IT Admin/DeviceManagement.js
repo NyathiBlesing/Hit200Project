@@ -34,6 +34,7 @@ import {
   Tooltip,
   InputAdornment,
 } from "@mui/material";
+import FlagIcon from "./FlagIcon";
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -47,6 +48,8 @@ import {
   History as HistoryIcon,
   Search as SearchIcon,
   Clear as ClearIcon,
+  VideoSettings as ProjectorIcon,
+  Print as PrinterIcon,
 } from "@mui/icons-material";
 import Sidebar from "../components/Sidebar";
 import { deviceAPI, userAPI } from "../api/api";
@@ -102,6 +105,18 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const DeviceManagement = () => {
+  // ...existing state and hooks
+  // Add the flag handler
+  const handleFlagDevice = async (serial_number) => {
+    try {
+      await deviceAPI.updateDevice(serial_number, { status: "Flagged" });
+      const devicesRes = await deviceAPI.getDevices();
+      setDevices(devicesRes);
+    } catch (error) {
+      setError("Failed to flag device for clearance.");
+    }
+  };
+
   const theme = useTheme();
   const [devices, setDevices] = useState([]);
   const [users, setUsers] = useState([]);
@@ -122,6 +137,28 @@ const DeviceManagement = () => {
     location: "",
     picture: null,
   });
+
+  // Helper to get 3-letter type code
+  const getTypeCode = (type) => {
+    switch ((type || '').toLowerCase()) {
+      case 'laptop': return 'LAP';
+      case 'desktop': return 'DES';
+      case 'tablet': return 'TAB';
+      case 'phone': return 'PHN';
+      case 'projector': return 'PRO';
+      case 'printer': return 'PRI';
+      default: return 'OTH';
+    }
+  };
+
+  // Auto-generate serial number for new device
+  const generateSerialNumber = (type) => {
+    const now = new Date();
+    const yy = String(now.getFullYear()).slice(-2);
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const rand = Math.floor(1000 + Math.random() * 9000); // random 4-digit
+    return `DEV-${getTypeCode(type)}-${yy}${mm}-${rand}`;
+  };
   const [editingDevice, setEditingDevice] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -162,11 +199,12 @@ const DeviceManagement = () => {
   }, []);
 
   const handleShow = () => {
+    const defaultType = "Laptop";
     setForm({
       name: "",
       assigned_to_id: null,
-      serial_number: "",
-      type: "Laptop",
+      serial_number: generateSerialNumber(defaultType),
+      type: defaultType,
       status: "Active",
       location: "",
       picture: null,
@@ -174,6 +212,18 @@ const DeviceManagement = () => {
     setEditingDevice(null);
     setShowModal(true);
   };
+
+  // When device type changes in form, update serial number if not editing
+  useEffect(() => {
+    if (!editingDevice && form.type) {
+      setForm((prev) => ({
+        ...prev,
+        serial_number: generateSerialNumber(form.type)
+      }));
+    }
+    // Only run when type changes and not editing
+    // eslint-disable-next-line
+  }, [form.type, editingDevice]);
 
   const handleEditShow = (device) => {
     console.log('Editing device:', device); // Debug log
@@ -282,27 +332,27 @@ const DeviceManagement = () => {
     return (
                 <TableRow 
                   key={device.serial_number}
-                  sx={{
+                  sx={(theme) => ({
                     '&:hover': {
-                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      backgroundColor: theme.palette.action.hover,
                     },
-                  }}
+                  })}
                 >
                   <TableCell 
-                    sx={{ 
+                    sx={theme => ({ 
                       fontFamily: "'Poppins', sans-serif",
-                      color: "white",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}
+                      color: theme.palette.text.primary,
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                    })}
                   >
                     {device.name}
                   </TableCell>
                   <TableCell 
-                    sx={{ 
+                    sx={theme => ({ 
                       fontFamily: "'Poppins', sans-serif",
-                      color: "white",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}
+                      color: theme.palette.text.primary,
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                    })}
                   >
           {device.assigned_to ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
@@ -315,15 +365,35 @@ const DeviceManagement = () => {
                   fontWeight: 500,
                 }}
               />
-              <Typography 
-                variant="caption" 
-                sx={{ 
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-              >
-                {device.assigned_to.role} • {device.assigned_to.department || 'No Department'}
-              </Typography>
+              <>
+  {console.log('ASSIGNED BLOCK:', device)}
+  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+    <Chip
+      label={device.assigned_to.username}
+      color="primary"
+      size="small"
+      sx={{
+        fontFamily: "'Poppins', sans-serif",
+        fontWeight: 500,
+      }}
+    />
+    <Typography 
+      variant="caption" 
+      sx={{
+        color: '#111',
+        backgroundColor: '#f5f5f5',
+        fontWeight: 'bold',
+        borderRadius: '6px',
+        padding: '2px 8px',
+        marginTop: '4px',
+        display: 'inline-block',
+        fontFamily: "'Poppins', sans-serif",
+      }}
+    >
+      {"TEST TEXT"}
+    </Typography>
+  </Box>
+</>
             </Box>
           ) : (
             <Chip
@@ -338,29 +408,29 @@ const DeviceManagement = () => {
           )}
                   </TableCell>
                   <TableCell 
-                    sx={{ 
+                    sx={theme => ({ 
                       fontFamily: "'Poppins', sans-serif",
-                      color: "white",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}
+                      color: theme.palette.text.primary,
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                    })}
                   >
                     {device.serial_number}
                   </TableCell>
                   <TableCell 
-                    sx={{ 
+                    sx={theme => ({ 
                       fontFamily: "'Poppins', sans-serif",
-                      color: "white",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}
+                      color: theme.palette.text.primary,
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                    })}
                   >
                     {device.type}
                   </TableCell>
                   <TableCell 
-                    sx={{ 
+                    sx={theme => ({ 
                       fontFamily: "'Poppins', sans-serif",
-                      color: "white",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}
+                      color: theme.palette.text.primary,
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                    })}
                   >
                     <Chip
                       label={device.status}
@@ -376,42 +446,54 @@ const DeviceManagement = () => {
                     />
                   </TableCell>
                   <TableCell 
-                    sx={{ 
+                    sx={theme => ({ 
                       fontFamily: "'Poppins', sans-serif",
-                      color: "white",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}
+                      color: theme.palette.text.primary,
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                    })}
                   >
                     {device.location}
                   </TableCell>
                   <TableCell 
-                    sx={{ 
+                    sx={theme => ({ 
                       fontFamily: "'Poppins', sans-serif",
-                      color: "white",
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}
+                      color: theme.palette.text.primary,
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                    })}
                   >
                     <IconButton
                       onClick={() => handleEditShow(device)}
-                      sx={{
-                        color: '#2563eb',
+                      sx={(theme) => ({
+                        color: theme.palette.primary.main,
                         '&:hover': {
-                          backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                          backgroundColor: theme.palette.primary.light,
                         },
-                      }}
+                      })}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       onClick={() => handleDelete(device.serial_number)}
-                      sx={{
-                        color: '#ef4444',
+                      sx={(theme) => ({
+                        color: theme.palette.error.main,
                         '&:hover': {
-                          backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                          backgroundColor: theme.palette.error.light,
                         },
-                      }}
+                      })}
           >
             <DeleteIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => handleFlagDevice(device.serial_number)}
+            sx={(theme) => ({
+              color: theme.palette.warning.main,
+              '&:hover': {
+                backgroundColor: theme.palette.warning.light,
+              },
+            })}
+            title="Flag for Clearance"
+          >
+            <FlagIcon />
           </IconButton>
         </TableCell>
       </TableRow>
@@ -419,7 +501,7 @@ const DeviceManagement = () => {
   };
 
   const getDeviceIcon = (type) => {
-    switch (type.toLowerCase()) {
+    switch ((type || '').toLowerCase()) {
       case 'desktop':
         return <ComputerIcon />;
       case 'laptop':
@@ -428,21 +510,24 @@ const DeviceManagement = () => {
         return <SmartphoneIcon />;
       case 'tablet':
         return <TabletIcon />;
+      case 'projector':
+        return <ProjectorIcon />;
+      case 'printer':
+        return <PrinterIcon />;
       default:
         return <ComputerIcon />;
     }
   };
 
+
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
-      case 'available':
+      case 'active':
         return 'success';
-      case 'in_use':
-        return 'primary';
-      case 'maintenance':
-        return 'warning';
-      case 'retired':
+      case 'inactive':
         return 'error';
+      case 'flagged':
+        return 'warning';
       default:
         return 'default';
     }
@@ -532,8 +617,8 @@ const DeviceManagement = () => {
                   onChange={handleFilterChange}
                 >
                   <MenuItem value="">All Types</MenuItem>
-                  <MenuItem value="Laptop">Laptop</MenuItem>
                   <MenuItem value="Desktop">Desktop</MenuItem>
+                  <MenuItem value="Laptop">Laptop</MenuItem>
                   <MenuItem value="Tablet">Tablet</MenuItem>
                   <MenuItem value="Phone">Phone</MenuItem>
                 </StyledSelect>
@@ -549,7 +634,8 @@ const DeviceManagement = () => {
                   <MenuItem value="">All Statuses</MenuItem>
                   <MenuItem value="Active">Active</MenuItem>
                   <MenuItem value="Inactive">Inactive</MenuItem>
-                  <MenuItem value="Maintenance">Maintenance</MenuItem>
+                  <MenuItem value="Flagged">Flagged</MenuItem>
+<MenuItem value="Cleared">Cleared</MenuItem>
                 </StyledSelect>
               </FormControl>
               <FormControl sx={{ minWidth: 150 }}>
@@ -757,6 +843,17 @@ const DeviceManagement = () => {
                         >
                           <EditIcon />
                         </IconButton>
+                        {!device.assigned_to && (
+                          <Tooltip title="Assign Device">
+                            <IconButton
+                              color="success"
+                              onClick={() => handleEditShow(device)}
+                              sx={{ ml: 1 }}
+                            >
+                              <CheckCircleIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                         <IconButton
                           onClick={() => handleDelete(device.serial_number)}
                           sx={{ color: theme.palette.error.main }}
@@ -833,7 +930,8 @@ const DeviceManagement = () => {
                   value={form.serial_number}
                   onChange={handleChange}
                   required
-                  disabled={!!editingDevice}
+                  disabled
+                  helperText="Auto-generated in format DEV-TYPE-YYMM-XXXX"
                 />
                 <FormControl fullWidth>
                   <InputLabel 
@@ -858,6 +956,8 @@ const DeviceManagement = () => {
                     <MenuItem value="Desktop" sx={{ color: theme.palette.text.primary }}>Desktop</MenuItem>
                     <MenuItem value="Tablet" sx={{ color: theme.palette.text.primary }}>Tablet</MenuItem>
                     <MenuItem value="Phone" sx={{ color: theme.palette.text.primary }}>Phone</MenuItem>
+                    <MenuItem value="Projector" sx={{ color: theme.palette.text.primary }}>Projector</MenuItem>
+                    <MenuItem value="Printer" sx={{ color: theme.palette.text.primary }}>Printer</MenuItem>
                   </StyledSelect>
                 </FormControl>
                 <FormControl fullWidth>
@@ -881,7 +981,7 @@ const DeviceManagement = () => {
                   >
                     <MenuItem value="Active" sx={{ color: theme.palette.text.primary }}>Active</MenuItem>
                     <MenuItem value="Inactive" sx={{ color: theme.palette.text.primary }}>Inactive</MenuItem>
-                    <MenuItem value="Maintenance" sx={{ color: theme.palette.text.primary }}>Maintenance</MenuItem>
+                    <MenuItem value="Flagged" sx={{ color: theme.palette.text.primary }}>Flagged</MenuItem>
                   </StyledSelect>
                 </FormControl>
                 <StyledTextField

@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model, authenticate
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, action
 from .models import Device, CustomUser, AuditLog, Notification
-from .serializers import DeviceSerializer, AuditLogSerializer, NotificationSerializer, CustomUserSerializer
+from .serializers import DeviceSerializer, AuditLogSerializer, NotificationSerializer, CustomUserSerializer, ClearanceSerializer
 from .utils import create_audit_log
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -18,6 +18,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
+from django.conf import settings
 
 
 class DeviceBySerialView(APIView):
@@ -73,8 +74,8 @@ class DeviceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Device.objects.select_related('assigned_to').all()
-        # Filter out cleared devices by default unless specifically requested
-        if not self.request.query_params.get('include_cleared', False):
+        # Only exclude cleared devices for list actions unless include_cleared is set
+        if getattr(self, 'action', None) == 'list' and not self.request.query_params.get('include_cleared', False):
             queryset = queryset.exclude(status='Cleared')
         return queryset
 
@@ -111,7 +112,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
             return Response({'error': 'An unexpected error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=True, methods=['post'])
-    def clear_device(self, request, pk=None):
+    def clear_device(self, request, serial_number=None):
         device = self.get_object()
         serializer = ClearanceSerializer(data=request.data)
         if serializer.is_valid():
@@ -284,10 +285,7 @@ class IssueViewSet(viewsets.ModelViewSet):
         return [permissions.IsAuthenticated()]
 
     def create(self, request, *args, **kwargs):
-        """
-        Create an issue using device serial number.
-        Expects: { "device_serial": "DEV123", "description": "..." }
-        """
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
@@ -438,24 +436,58 @@ from .models import Maintenance
 from .serializers import MaintenanceSerializer
 
 class MaintenanceViewSet(ModelViewSet):
-    queryset = Maintenance.objects.all().order_by('-maintenance_date')  
+    queryset = Maintenance.objects.all().order_by('-maintenance_date')
     serializer_class = MaintenanceSerializer
-    
-    
+
+    def perform_create(self, serializer):
+        maintenance = serializer.save()
+        from .utils import create_audit_log
+        create_audit_log(
+            request=self.request,
+            action='CREATE',
+            resource_type='MAINTENANCE',
+            resource_id=maintenance.id,
+            description=f'Created maintenance for device {maintenance.device.name} on {maintenance.maintenance_date}'
+        )
+
+    def perform_update(self, serializer):
+        maintenance = serializer.save()
+        from .utils import create_audit_log
+        create_audit_log(
+            request=self.request,
+            action='UPDATE',
+            resource_type='MAINTENANCE',
+            resource_id=maintenance.id,
+            description=f'Updated maintenance for device {maintenance.device.name} on {maintenance.maintenance_date}'
+        )
+
+    def perform_destroy(self, instance):
+        device_info = f'{instance.device.name} on {instance.maintenance_date}'
+        instance.delete()
+        from .utils import create_audit_log
+        create_audit_log(
+            request=self.request,
+            action='DELETE',
+            resource_type='MAINTENANCE',
+            resource_id=instance.id,
+            description=f'Deleted maintenance for device {device_info}'
+        )
+
 #Logs
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import serializers
 from django.utils import timezone
 from django.http import HttpResponse
+from datetime import timedelta
 import csv
 from .models import AuditLog
 from .serializers import AuditLogSerializer
 
 class AuditLogViewSet(viewsets.ModelViewSet):
     """
-    ViewSet for managing audit logs. Only accessible by admin users.
+    ViewSet for managing audit logs. Accessible by any authenticated user.
     """
-    permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = AuditLogSerializer
 
     @action(detail=False, methods=['post'])
@@ -629,6 +661,14 @@ def download_maintenance_report(request):
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from .models import ClearanceLog
+from .serializers import ClearanceSerializer
+
+class ClearanceLogViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for listing and retrieving clearance logs."""
+    queryset = ClearanceLog.objects.select_related('device', 'cleared_by').all().order_by('-date_cleared')
+    serializer_class = ClearanceSerializer
+    permission_classes = [permissions.IsAuthenticated]
 from .models import Device
 
 class ClearanceViewSet(viewsets.ViewSet):
@@ -644,12 +684,28 @@ class ClearanceViewSet(viewsets.ViewSet):
         """Mark a device as cleared"""
         device_id = request.data.get("device_id")
 
+        # Only allow users with role 'Operations' to clear devices
+        if not hasattr(request.user, 'role') or request.user.role != 'Operations':
+            return Response({'error': 'Only Operations staff are allowed to clear devices.'}, status=status.HTTP_403_FORBIDDEN)
+
         try:
             device = Device.objects.get(id=device_id)
 
             # Mark device as cleared
             device.status = "Cleared"
             device.save()
+
+            # Create an audit log for the clearance action
+            from .utils import create_audit_log
+            create_audit_log(
+                request=request,
+                action='CLEAR',
+                resource_type='DEVICE',
+                resource_id=device.id,
+                resource_name=device.name,
+                description=f'Cleared device {device.name} (SN: {device.serial_number})',
+                status='SUCCESS'
+            )
 
             return Response({"message": f"Device {device.name} cleared successfully!"}, status=status.HTTP_200_OK)
 
@@ -752,7 +808,13 @@ class CreateUserView(APIView):
 
             # Generate setup token
             token = urlsafe_base64_encode(force_bytes(user.pk))
-            
+
+            # Send account setup email
+            from .utils import send_account_setup_email
+            # You may want to make this configurable
+            domain = getattr(settings, 'FRONTEND_DOMAIN', 'localhost:3000')
+            send_account_setup_email(user, domain)
+
             return Response(
                 {
                     'message': 'User created successfully. Setup email sent.',
@@ -836,6 +898,18 @@ class NotificationViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Notification.objects.filter(recipient=self.request.user).order_by('-created_at')
 
+    def destroy(self, request, pk=None):
+        notification = self.get_object()
+        if notification.recipient != request.user:
+            return Response({'error': "You don't have permission to delete this notification."}, status=status.HTTP_403_FORBIDDEN)
+        notification.delete()
+        return Response({'status': 'deleted'})
+
+    def delete(self, request, *args, **kwargs):
+        # Custom bulk delete for notifications list endpoint
+        Notification.objects.filter(recipient=request.user).delete()
+        return Response({'status': 'all deleted'})
+
     @action(detail=True, methods=['post'])
     def mark_as_read(self, request, pk=None):
         notification = self.get_object()
@@ -880,6 +954,16 @@ def login_view(request):
 
     if user and user.is_active:
         tokens = get_tokens_for_user(user)
+        # Only log login for IT Admins
+        if hasattr(user, 'role') and user.role == 'Admin':
+            from .utils import create_audit_log
+            create_audit_log(
+                request=request,
+                action='LOGIN',
+                resource_type='USER',
+                resource_id=user.id,
+                description=f'User {user.username} logged in'
+            )
         return Response({
             'access': tokens['access'],
             'refresh': tokens['refresh'],

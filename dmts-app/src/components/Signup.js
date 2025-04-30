@@ -15,6 +15,9 @@ import {
 import { styled } from "@mui/material/styles";
 import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import { authAPI } from '../api/api';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(8),
@@ -62,7 +65,10 @@ const StyledTextField = styled(TextField)({
 
 
 
+
 const Signup = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const theme = useTheme();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -70,8 +76,6 @@ const Signup = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    firstName: "",
-    lastName: "",
     role: "Admin",
   });
   const [error, setError] = useState("");
@@ -90,6 +94,20 @@ const Signup = () => {
     setLoading(true);
     setError("");
 
+    // Username validation
+    const usernameRegex = /^[a-zA-Z0-9_]{4,}$/;
+    if (!usernameRegex.test(formData.username)) {
+      setError("Username must be at least 4 characters and contain only letters, numbers, or underscores.");
+      setLoading(false);
+      return;
+    }
+    // Password validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+    if (!passwordRegex.test(formData.password)) {
+      setError("Password must be at least 8 characters, include uppercase, lowercase, a number, and a special character.");
+      setLoading(false);
+      return;
+    }
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
@@ -103,8 +121,7 @@ const Signup = () => {
         username: formData.username,
         email: formData.email,
         password: formData.password,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
+
         role: formData.role,
       });
 
@@ -125,8 +142,7 @@ const Signup = () => {
       localStorage.setItem("email", userData.email);
       localStorage.setItem("username", userData.username);
       localStorage.setItem("department", userData.department);
-      localStorage.setItem("first_name", userData.first_name);
-      localStorage.setItem("last_name", userData.last_name);
+
 
       // Show success message and redirect based on role
       setError("");
@@ -220,24 +236,6 @@ const Signup = () => {
           )}
 
           <StyledForm onSubmit={handleSubmit}>
-            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-              <StyledTextField
-                required
-                fullWidth
-                name="firstName"
-                label="First Name"
-                value={formData.firstName}
-                onChange={handleInputChange}
-              />
-              <StyledTextField
-                required
-                fullWidth
-                name="lastName"
-                label="Last Name"
-                value={formData.lastName}
-                onChange={handleInputChange}
-              />
-            </Box>
             <Typography 
               variant="body2" 
               sx={{ 
@@ -273,20 +271,46 @@ const Signup = () => {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={formData.password}
               onChange={handleInputChange}
               sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    edge="end"
+                    tabIndex={-1}
+                    style={{ color: 'rgba(255,255,255,0.6)' }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                )
+              }}
             />
             <StyledTextField
               required
               fullWidth
               name="confirmPassword"
               label="Confirm Password"
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               value={formData.confirmPassword}
               onChange={handleInputChange}
               sx={{ mb: 3 }}
+              InputProps={{
+                endAdornment: (
+                  <IconButton
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    edge="end"
+                    tabIndex={-1}
+                    style={{ color: 'rgba(255,255,255,0.6)' }}
+                  >
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                )
+              }}
             />
             <Button
               type="submit"

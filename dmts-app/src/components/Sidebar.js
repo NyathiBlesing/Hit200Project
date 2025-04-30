@@ -98,15 +98,26 @@ const Sidebar = () => {
     { text: 'User Management', icon: <UsersIcon />, path: '/users' },
     { text: 'Device Management', icon: <DevicesIcon />, path: '/devices' },
     { text: 'Issue Management', icon: <IssuesIcon />, path: '/issues' },
-    { text: 'Maintenance', icon: <MaintenanceIcon />, path: '/maintenance' },
     { text: 'Reports', icon: <ReportsIcon />, path: '/reports' },
     { text: 'Audit Logs', icon: <AuditIcon />, path: '/audit-logs' },
   ];
 
+  // Operations menu items
+  const operationsMenuItems = [
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/operations-dashboard' },
+    { text: 'Maintenance Management', icon: <MaintenanceIcon />, path: '/maintenance' },
+    { text: 'Device Clearance', icon: <DevicesIcon />, path: '/device-clearance' },
+  ];
+
   // Combine menu items based on role
-  const menuItems = userRole === 'Admin' 
-    ? [...adminMenuItems, ...commonMenuItems]
-    : [...employeeMenuItems, ...commonMenuItems];
+  let menuItems;
+  if (userRole === 'Admin') {
+    menuItems = [...adminMenuItems, ...commonMenuItems];
+  } else if (userRole === 'Operations') {
+    menuItems = [...operationsMenuItems, ...commonMenuItems];
+  } else {
+    menuItems = [...employeeMenuItems, ...commonMenuItems];
+  }
 
   return (
     <StyledSidebar>
