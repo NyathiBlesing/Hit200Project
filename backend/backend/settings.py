@@ -88,11 +88,11 @@ DEFAULT_FROM_EMAIL = 'dmts@example.com'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('MYSQL_DATABASE', 'dmts_db'),
-        'USER': os.environ.get('MYSQL_USER', 'Dre'),
-        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'mqzero4'),
-        'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
-        'PORT': os.environ.get('MYSQL_PORT', '3306'),
+        'NAME': os.environ.get('MYSQL_ADDON_DB', 'dmts_db'),
+        'USER': os.environ.get('MYSQL_ADDON_USER', 'Dre'),
+        'PASSWORD': os.environ.get('MYSQL_ADDON_PASSWORD', 'mqzero4'),
+        'HOST': os.environ.get('MYSQL_ADDON_HOST', 'localhost'),
+        'PORT': os.environ.get('MYSQL_ADDON_PORT', '3306'),
     }
 }
 
