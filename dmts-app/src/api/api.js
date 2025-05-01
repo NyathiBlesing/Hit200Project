@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Base URLs
-const BASE_URL = "http://127.0.0.1:8000/api/";
+const BASE_URL = "https://hit200project.onrender.com/api/";
 
 // Axios instance with default headers
 const axiosInstance = axios.create({
