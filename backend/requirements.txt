@@ -5,3 +5,4 @@ djangorestframework-simplejwt
 gunicorn
 mysqlclient
 django-extensions
+Pillow
