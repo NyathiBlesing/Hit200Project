@@ -85,6 +85,7 @@ DEFAULT_FROM_EMAIL = 'dmts@example.com'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# settings.py
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -95,6 +96,7 @@ DATABASES = {
         'NAME': 'railway',                 # From URL
         }
     }
+
 
 
 
