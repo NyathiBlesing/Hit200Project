@@ -146,7 +146,6 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'api.CustomUser'
 
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
 
 CORS_ALLOW_CREDENTIALS = True
 
@@ -183,7 +182,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# settings.py
+
 CORS_ALLOWED_ORIGINS = [
     "https://hit200-project.vercel.app",
     "https://hit200project.onrender.com",
