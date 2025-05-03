@@ -202,11 +202,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def save(self, *args, **kwargs):
-        """
-        Ensures password is always hashed when saved.
-        """
-        if self.pk is None or not self.password.startswith('pbkdf2_sha256$'):
-            self.set_password(self.password)
         super().save(*args, **kwargs)
 
     def __str__(self):
