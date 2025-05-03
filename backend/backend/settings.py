@@ -25,9 +25,6 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'insecure-dev-secret-key')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1,hit200project.onrender.com').split(',')
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -85,14 +82,16 @@ DEFAULT_FROM_EMAIL = 'dmts@example.com'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# settings.py
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('MYSQL_ADDON_DB', 'dmts_db'),
-        'USER': os.environ.get('MYSQL_ADDON_USER', 'Dre'),
-        'PASSWORD': os.environ.get('MYSQL_ADDON_PASSWORD', 'mqzero4'),
-        'HOST': os.environ.get('MYSQL_ADDON_HOST', 'localhost'),
-        'PORT': os.environ.get('MYSQL_ADDON_PORT', '3306'),
+        'HOST': 'ballast.proxy.rlwy.net',  # From URL
+        'PORT': 13156,                     # From URL
+        'USER': 'root',                    # From URL
+        'PASSWORD': os.getenv('DB_PASSWORD'),  # Store password securely
+        'NAME': 'railway',                 # From URL
+        }
     }
 }
 
