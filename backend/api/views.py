@@ -866,6 +866,7 @@ class SignupView(APIView):
             email = request.data.get('email')
             department = 'IT'
             password = request.data.get('password')
+            print(f"SIGNUP DEBUG: username='{username}', password='{password}'")
             user = CustomUser(
                 email=email,
                 username=username,
@@ -954,7 +955,7 @@ def get_tokens_for_user(user):
 def login_view(request):
     username = request.data.get('username')
     password = request.data.get('password')
-
+    print(f"LOGIN DEBUG: username='{username}', password='{password}'")
     user = authenticate(username=username, password=password)
 
     if user and user.is_active:
