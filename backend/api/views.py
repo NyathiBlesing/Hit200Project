@@ -862,14 +862,19 @@ class SignupView(APIView):
                 return Response({'error': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
             # Create admin user
-            user = CustomUser.objects.create_user(
-                username=request.data.get('username'),
-                email=request.data.get('email'),
-                password=request.data.get('password'),
-                department='IT',
+            username = request.data.get('username')
+            email = request.data.get('email')
+            department = 'IT'
+            password = request.data.get('password')
+            user = CustomUser(
+                email=email,
+                username=username,
+                department=department,
                 role='Admin',
                 is_staff=True
             )
+            user.set_password(password)
+            user.save()
 
             # Create token for the new admin
             refresh = RefreshToken.for_user(user)
