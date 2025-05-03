@@ -89,7 +89,7 @@ DATABASES = {
         'HOST': 'ballast.proxy.rlwy.net',  # From URL
         'PORT': 13156,                     # From URL
         'USER': 'root',                    # From URL
-        'PASSWORD': os.getenv('DB_PASSWORD'),  # Store password securely
+        'PASSWORD': 'IXBQMDNrPIOcyLZlVcKlFIhXTxkrfFqr',  # Store password securely
         'NAME': 'railway',                 # From URL
         }
     }
