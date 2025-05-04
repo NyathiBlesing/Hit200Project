@@ -186,11 +186,13 @@ AUTHENTICATION_BACKENDS = [
 CORS_ALLOWED_ORIGINS = [
     "https://hit200-project.vercel.app",
     "https://hit200project.onrender.com",
+    "http://localhost:3000"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://hit200-project.vercel.app",
     "https://hit200project.onrender.com", 
+    "http://localhost:3000",
 ]
 
 # Logging configuration
