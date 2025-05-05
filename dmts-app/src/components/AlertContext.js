@@ -21,8 +21,8 @@ export const AlertProvider = ({ children }) => {
   return (
     <AlertContext.Provider value={{ showAlert }}>
       {children}
-      <Snackbar open={alert.open} autoHideDuration={alert.duration} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity={alert.severity} sx={{ width: '100%' }}>
+      <Snackbar open={alert.open} autoHideDuration={alert.duration} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
+        <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity={alert.severity} sx={{ width: '100%', fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
           {alert.message}
         </MuiAlert>
       </Snackbar>

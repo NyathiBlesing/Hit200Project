@@ -87,7 +87,7 @@ const AccountSetup = () => {
             align="center"
             sx={{ 
               color: theme.palette.mode === 'dark' ? '#fff' : '#1a1a1a',
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               fontWeight: 600,
               mb: 3,
             }}
@@ -177,7 +177,7 @@ const AccountSetup = () => {
               sx={{
                 mt: 2,
                 backgroundColor: theme.palette.primary.main,
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                 padding: '12px',
                 borderRadius: '8px',
                 '&:hover': {

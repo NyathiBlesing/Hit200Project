@@ -49,7 +49,7 @@ import { useTheme } from '@mui/material/styles';
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: '8px',
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     color: theme.palette.text.primary,
     '& fieldset': {
       borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)',
@@ -62,7 +62,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
   },
   '& .MuiInputLabel-root': {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)',
     '&.Mui-focused': {
       color: theme.palette.primary.main,
@@ -361,7 +361,7 @@ const IssueManagement = () => {
                 sx={{ 
                   fontWeight: 600,
                   color: theme.palette.text.primary,
-                  fontFamily: "'Poppins', sans-serif",
+                  fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                 }}
               >
                 Issue Management
@@ -373,12 +373,13 @@ const IssueManagement = () => {
         {/* Filters */}
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
           <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel sx={{ color: theme.palette.text.secondary }}>Status</InputLabel>
+            <InputLabel sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>Status</InputLabel>
             <Select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
               sx={{
                 color: theme.palette.text.primary,
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                 '& .MuiOutlinedInput-notchedOutline': {
                   borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)',
                 },
@@ -399,12 +400,13 @@ const IssueManagement = () => {
           </FormControl>
 
           <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel sx={{ color: theme.palette.text.secondary }}>Priority</InputLabel>
+            <InputLabel sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>Priority</InputLabel>
             <Select
               value={filterPriority}
               onChange={(e) => setFilterPriority(e.target.value)}
               sx={{
                 color: theme.palette.text.primary,
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                 '& .MuiOutlinedInput-notchedOutline': {
                   borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)',
                 },
@@ -425,12 +427,13 @@ const IssueManagement = () => {
           </FormControl>
 
           <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel sx={{ color: theme.palette.text.secondary }}>Sort By</InputLabel>
+            <InputLabel sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>Sort By</InputLabel>
             <Select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               sx={{
                 color: theme.palette.text.primary,
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                 '& .MuiOutlinedInput-notchedOutline': {
                   borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)',
                 },
@@ -468,7 +471,7 @@ const IssueManagement = () => {
                 <TableRow>
                   <TableCell 
                     sx={{ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       fontWeight: 500,
                       color: theme.palette.text.secondary,
                       borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -478,7 +481,7 @@ const IssueManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={{ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       fontWeight: 500,
                       color: theme.palette.text.secondary,
                       borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -488,7 +491,7 @@ const IssueManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={{ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       fontWeight: 500,
                       color: theme.palette.text.secondary,
                       borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -498,7 +501,7 @@ const IssueManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={{ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       fontWeight: 500,
                       color: theme.palette.text.secondary,
                       borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -508,7 +511,7 @@ const IssueManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={{ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       fontWeight: 500,
                       color: theme.palette.text.secondary,
                       borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -524,17 +527,18 @@ const IssueManagement = () => {
                     <TableCell 
                       sx={{ 
                         color: theme.palette.text.primary,
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                       }}
                     >
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 500, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                           {issue.title}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                           {issue.description}
                         </Typography>
-                        <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
+                        <Typography variant="caption" sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                           Reported by: {issue.username} • {new Date(issue.created_at).toLocaleString()}
                         </Typography>
                       </Box>
@@ -542,14 +546,15 @@ const IssueManagement = () => {
                     <TableCell 
                       sx={{ 
                         color: theme.palette.text.primary,
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                       }}
                     >
                       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                        <Typography variant="body2">
+                        <Typography variant="body2" sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                       {issue.device_name}
                         </Typography>
-                        <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
+                        <Typography variant="caption" sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                           SN: {issue.device_serial}
                         </Typography>
                       </Box>
@@ -563,7 +568,7 @@ const IssueManagement = () => {
                         label={issue.priority}
                         color={getPriorityColor(issue.priority)}
                         size="small"
-                        sx={{ fontFamily: "'Poppins', sans-serif" }}
+                        sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}
                       />
                     </TableCell>
                     <TableCell 
@@ -575,7 +580,7 @@ const IssueManagement = () => {
                         label={issue.status}
                         color={getStatusColor(issue.status)}
                         size="small"
-                        sx={{ fontFamily: "'Poppins', sans-serif" }}
+                        sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}
                       />
                     </TableCell>
                     <TableCell 
@@ -622,23 +627,23 @@ const IssueManagement = () => {
         >
           <DialogTitle sx={{ 
             color: theme.palette.text.primary,
-            fontFamily: "'Poppins', sans-serif",
+            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             fontWeight: 600,
           }}>
             Respond to Issue
           </DialogTitle>
             <DialogContent>
             <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle1" sx={{ mb: 1, color: theme.palette.text.primary }}>
+              <Typography variant="subtitle1" sx={{ mb: 1, color: theme.palette.text.primary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                 Issue Details:
               </Typography>
-              <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+              <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                 Device: {currentIssue?.device_name}
               </Typography>
-              <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+              <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                 Reported by: {currentIssue?.username}
               </Typography>
-              <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+              <Typography variant="body2" sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                 Priority: {currentIssue?.priority}
               </Typography>
             </Box>
@@ -652,7 +657,7 @@ const IssueManagement = () => {
               sx={{ mb: 2 }}
                 />
                 <FormControl fullWidth>
-              <InputLabel>Status</InputLabel>
+              <InputLabel sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>Status</InputLabel>
                   <StyledSelect
                     value={responseForm.status}
                 onChange={(e) => setResponseForm({ ...responseForm, status: e.target.value })}
@@ -667,7 +672,7 @@ const IssueManagement = () => {
                 </FormControl>
             </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} sx={{ color: theme.palette.text.secondary }}>
+            <Button onClick={handleClose} sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
                 Cancel
               </Button>
               <Button
@@ -687,16 +692,16 @@ const IssueManagement = () => {
         aria-labelledby="delete-dialog-title"
         aria-describedby="delete-dialog-description"
       >
-        <DialogTitle id="delete-dialog-title" sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: 600 }}>
+        <DialogTitle id="delete-dialog-title" sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif', fontWeight: 600 }}>
           Confirm Deletion
         </DialogTitle>
         <DialogContent>
-          <Typography id="delete-dialog-description" sx={{ fontFamily: "'Poppins', sans-serif" }}>
+          <Typography id="delete-dialog-description" sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
             Are you sure you want to delete this issue? This action cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteCancel} sx={{ color: theme.palette.text.secondary }}>
+          <Button onClick={handleDeleteCancel} sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
             Cancel
           </Button>
           <Button onClick={handleDeleteConfirm} color="error" variant="contained">

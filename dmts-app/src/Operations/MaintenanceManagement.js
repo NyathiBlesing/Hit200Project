@@ -49,7 +49,7 @@ import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: '8px',
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.paper,
     '& fieldset': {
@@ -63,7 +63,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
   },
   '& .MuiInputLabel-root': {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     color: theme.palette.text.secondary,
     '&.Mui-focused': {
       color: theme.palette.primary.main,
@@ -258,7 +258,7 @@ const MaintenanceManagement = () => {
               sx={{ 
                 fontWeight: 600,
                 color: theme.palette.text.primary,
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               }}
             >
               Maintenance Management
@@ -270,7 +270,7 @@ const MaintenanceManagement = () => {
             onClick={() => handleOpenDialog()}
             sx={{
               backgroundColor: theme.palette.primary.main,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               '&:hover': {
                 backgroundColor: theme.palette.primary.dark,
               },
@@ -366,7 +366,7 @@ const MaintenanceManagement = () => {
             }
           }}
         >
-          <DialogTitle sx={{ color: theme.palette.text.primary, fontFamily: "'Poppins', sans-serif" }}>
+          <DialogTitle sx={{ color: theme.palette.text.primary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
             {selectedMaintenance ? 'Edit Maintenance' : 'Schedule Maintenance'}
           </DialogTitle>
           <DialogContent>
@@ -427,7 +427,7 @@ const MaintenanceManagement = () => {
               onClick={handleCloseDialog}
               sx={{ 
                 color: theme.palette.text.secondary,
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               }}
             >
               Cancel
@@ -437,7 +437,7 @@ const MaintenanceManagement = () => {
               variant="contained"
               sx={{
                 backgroundColor: theme.palette.primary.main,
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                 '&:hover': {
                   backgroundColor: theme.palette.primary.dark,
                 },

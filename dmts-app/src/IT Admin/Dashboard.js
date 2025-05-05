@@ -84,7 +84,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 const StyledTextField = styled(TextField)({
   '& .MuiOutlinedInput-root': {
     borderRadius: '8px',
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     color: 'white',
     '& fieldset': {
       borderColor: 'rgba(255, 255, 255, 0.23)',
@@ -97,7 +97,7 @@ const StyledTextField = styled(TextField)({
     },
   },
   '& .MuiInputLabel-root': {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     color: 'rgba(255, 255, 255, 0.6)',
     '&.Mui-focused': {
       color: '#2563eb',
@@ -124,7 +124,7 @@ const StatCard = ({ title, value, icon, color }) => {
             sx={{ 
               fontWeight: 600,
               color: theme.palette.text.primary,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             }}
           >
             {title}
@@ -135,7 +135,7 @@ const StatCard = ({ title, value, icon, color }) => {
           sx={{ 
             fontWeight: 700,
             color: color,
-            fontFamily: "'Poppins', sans-serif",
+            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
           }}
         >
           {value}
@@ -237,7 +237,7 @@ const Dashboard = () => {
         labels: {
           color: theme.palette.text.primary,
           font: {
-            family: "'Poppins', sans-serif",
+            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
           },
         },
       },
@@ -266,7 +266,7 @@ const Dashboard = () => {
         ticks: {
           color: theme.palette.text.secondary,
           font: {
-            family: "'Poppins', sans-serif",
+            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
           },
         },
         grid: {
@@ -277,7 +277,7 @@ const Dashboard = () => {
         ticks: {
           color: theme.palette.text.secondary,
           font: {
-            family: "'Poppins', sans-serif",
+            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
           },
         },
         grid: {
@@ -312,7 +312,7 @@ const Dashboard = () => {
             sx={{ 
               fontWeight: 600,
               color: theme.palette.text.primary,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             }}
           >
             IT Admin Dashboard
@@ -323,7 +323,7 @@ const Dashboard = () => {
             onClick={fetchData}
             sx={{
               backgroundColor: theme.palette.primary.main,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               '&:hover': {
                 backgroundColor: theme.palette.primary.dark,
               },
@@ -375,7 +375,7 @@ const Dashboard = () => {
                 <Typography
                   variant="h6"
                   sx={{
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     fontWeight: 600,
                     color: theme.palette.text.primary,
                     mb: 2,
@@ -396,7 +396,7 @@ const Dashboard = () => {
                 <Typography
                   variant="h6"
                   sx={{
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     fontWeight: 600,
                     color: theme.palette.text.primary,
                     mb: 2,
@@ -417,7 +417,7 @@ const Dashboard = () => {
                 <Typography
                   variant="h6"
                   sx={{
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     fontWeight: 600,
                     color: theme.palette.text.primary,
                     mb: 2,
@@ -431,7 +431,7 @@ const Dashboard = () => {
                       <TableRow>
                         <TableCell 
                           sx={{ 
-                            fontFamily: "'Poppins', sans-serif",
+                            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                             fontWeight: 500,
                             color: theme.palette.text.secondary,
                             borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -441,7 +441,7 @@ const Dashboard = () => {
                         </TableCell>
                         <TableCell 
                           sx={{ 
-                            fontFamily: "'Poppins', sans-serif",
+                            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                             fontWeight: 500,
                             color: theme.palette.text.secondary,
                             borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -451,7 +451,7 @@ const Dashboard = () => {
                         </TableCell>
                         <TableCell 
                           sx={{ 
-                            fontFamily: "'Poppins', sans-serif",
+                            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                             fontWeight: 500,
                             color: theme.palette.text.secondary,
                             borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -461,7 +461,7 @@ const Dashboard = () => {
                         </TableCell>
                         <TableCell 
                           sx={{ 
-                            fontFamily: "'Poppins', sans-serif",
+                            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                             fontWeight: 500,
                             color: theme.palette.text.secondary,
                             borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -515,7 +515,7 @@ const Dashboard = () => {
                               color={device.status === "Active" ? "success" : "error"}
                               size="small"
                               sx={{
-                                fontFamily: "'Poppins', sans-serif",
+                                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                 fontWeight: 500,
                               }}
                             />

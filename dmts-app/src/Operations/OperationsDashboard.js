@@ -66,12 +66,12 @@ const StatCard = ({ title, description, icon, color }) => {
         </Avatar>
         <Typography
           variant="h6"
-          sx={{ fontWeight: 600, color: theme.palette.text.primary, fontFamily: "'Poppins', sans-serif" }}
+          sx={{ fontWeight: 600, color: theme.palette.text.primary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}
         >
           {title}
         </Typography>
       </Box>
-      <Typography variant="body1" sx={{ color: theme.palette.text.secondary, fontFamily: "'Poppins', sans-serif" }}>
+      <Typography variant="body1" sx={{ color: theme.palette.text.secondary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
         {description}
       </Typography>
     </StyledCard>
@@ -174,7 +174,7 @@ const OperationsDashboard = () => {
     <Box sx={{ display: 'flex', minHeight: '100vh', background: theme.palette.background.default }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, p: 4, ml: '250px' }}>
-        <Typography variant="h4" sx={{ fontFamily: 'Poppins', mb: 4, color: theme.palette.text.primary, fontWeight: 600 }}>
+        <Typography variant="h4" sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif', mb: 4, color: theme.palette.text.primary, fontWeight: 600 }}>
           Welcome to Operations Dashboard
         </Typography>
         <Grid container spacing={3} mb={3}>

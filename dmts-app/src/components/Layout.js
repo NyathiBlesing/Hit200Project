@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
   }
 
   return (
-    <Box sx={{ position: 'relative', minHeight: '100vh', width: '100%', px: { xs: 0, sm: 2 } }}>
+    <Box sx={{ position: 'relative', minHeight: '100vh', width: '100%', px: { xs: 0, sm: 2 }, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
       {children}
       <Box
         sx={{

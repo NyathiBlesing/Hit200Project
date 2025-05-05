@@ -249,7 +249,7 @@ const UserManagement = () => {
             sx={{ 
               fontWeight: 600,
                 color: theme.palette.text.primary,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             }}
           >
               User Management
@@ -261,7 +261,7 @@ const UserManagement = () => {
             onClick={() => handleOpenDialog()}
             sx={{
               backgroundColor: theme.palette.primary.main,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               '&:hover': {
                 backgroundColor: theme.palette.primary.dark,
               },
@@ -284,7 +284,7 @@ const UserManagement = () => {
                   minWidth: 200,
                   '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     color: theme.palette.text.primary,
                     '& fieldset': {
                       borderColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'rgba(0, 0, 0, 0.23)',
@@ -297,7 +297,7 @@ const UserManagement = () => {
                     },
                   },
                   '& .MuiInputLabel-root': {
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     color: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)',
                     '&.Mui-focused': {
                       color: theme.palette.primary.main,
@@ -392,7 +392,7 @@ const UserManagement = () => {
               <TableRow>
                 <TableCell 
                   sx={{ 
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -402,7 +402,7 @@ const UserManagement = () => {
                 </TableCell>
                 <TableCell 
                   sx={{ 
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -412,7 +412,7 @@ const UserManagement = () => {
                 </TableCell>
                 <TableCell 
                   sx={{ 
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -422,7 +422,7 @@ const UserManagement = () => {
                 </TableCell>
                 <TableCell 
                   sx={{ 
-                    fontFamily: "'Poppins', sans-serif",
+                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                     fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -432,7 +432,7 @@ const UserManagement = () => {
                     </TableCell>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -442,7 +442,7 @@ const UserManagement = () => {
                     </TableCell>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -480,7 +480,7 @@ const UserManagement = () => {
                       label={user.role}
                           color={getRoleColor(user.role)}
                       size="small"
-                          sx={{ fontFamily: "'Poppins', sans-serif" }}
+                          sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}
                     />
                   </TableCell>
                       <TableCell 
@@ -537,7 +537,7 @@ const UserManagement = () => {
             }
           }}
         >
-          <DialogTitle sx={{ color: theme.palette.text.primary, fontFamily: "'Poppins', sans-serif" }}>
+          <DialogTitle sx={{ color: theme.palette.text.primary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
             {selectedUser ? 'Edit User' : 'Create New User'}
           </DialogTitle>
           <DialogContent>
@@ -654,7 +654,7 @@ const UserManagement = () => {
               onClick={handleCloseDialog}
               sx={{
                 color: theme.palette.text.secondary,
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               }}
             >
               Cancel
@@ -664,7 +664,7 @@ const UserManagement = () => {
               variant="contained"
               sx={{
                 backgroundColor: theme.palette.primary.main,
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                 '&:hover': {
                   backgroundColor: theme.palette.primary.dark,
                 },

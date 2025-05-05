@@ -143,7 +143,7 @@ const Clearance = () => {
     <Box sx={{ display: 'flex', minHeight: '100vh', background: theme.palette.background.default }}>
       <Sidebar />
       <Box sx={{ flexGrow: 1, p: 4, ml: '250px' }}>
-        <Typography variant="h4" sx={{ fontFamily: 'Poppins', mb: 3, color: theme.palette.text.primary, fontWeight: 600 }}>
+        <Typography variant="h4" sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif', mb: 3, color: theme.palette.text.primary, fontWeight: 600 }}>
           Device Clearance
         </Typography>
         {/* Toggle for flagged/cleared devices */}
@@ -165,7 +165,7 @@ const Clearance = () => {
 
         <Card sx={{ mb: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
-            <Typography variant="h6" sx={{ mb: 2, fontFamily: 'Poppins' }}>Select a Device for Clearance</Typography>
+            <Typography variant="h6" sx={{ mb: 2, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>Select a Device for Clearance</Typography>
             <form onSubmit={handleSubmit}>
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel id="device-select-label">Device</InputLabel>
@@ -188,7 +188,7 @@ const Clearance = () => {
                   )}
                 </Select>
               </FormControl>
-              <Button type="submit" variant="contained" color="error" sx={{ fontFamily: 'Poppins', borderRadius: 2 }}>
+              <Button type="submit" variant="contained" color="error" sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif', borderRadius: 2 }}>
                 Start Clearance
               </Button>
             </form>
@@ -200,7 +200,7 @@ const Clearance = () => {
         {/* Audit Log Table */}
         <Card sx={{ borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
-            <Typography variant="h6" sx={{ fontFamily: 'Poppins', mb: 2 }}>Clearance Audit Log</Typography>
+            <Typography variant="h6" sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif', mb: 2 }}>Clearance Audit Log</Typography>
             <TableContainer component={Paper}>
               <Table>
                 <TableHead>
@@ -288,7 +288,7 @@ const DeviceClearance = ({ open, device, onClose, onClearanceComplete }) => {
       }}
     >
       <DialogTitle sx={(theme) => ({
-        fontFamily: "'Poppins', sans-serif",
+        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
         borderBottom: `1px solid ${theme.palette.divider}`
       })}>
         Clear Device
@@ -299,7 +299,7 @@ const DeviceClearance = ({ open, device, onClose, onClearanceComplete }) => {
             variant="subtitle1" 
             sx={(theme) => ({
               mb: 2,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               color: theme.palette.text.secondary
             })}
           >
@@ -309,7 +309,7 @@ const DeviceClearance = ({ open, device, onClose, onClearanceComplete }) => {
             variant="body1" 
             sx={{ 
               mb: 1,
-              fontFamily: "'Poppins', sans-serif"
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif'
             }}
           >
             Name: {device?.name}
@@ -318,7 +318,7 @@ const DeviceClearance = ({ open, device, onClose, onClearanceComplete }) => {
             variant="body1" 
             sx={{ 
               mb: 2,
-              fontFamily: "'Poppins', sans-serif"
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif'
             }}
           >
             Serial Number: {device?.serial_number}

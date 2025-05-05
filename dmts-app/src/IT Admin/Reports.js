@@ -87,7 +87,7 @@ const Reports = () => {
             sx={{ 
               fontWeight: 600,
               color: theme.palette.text.primary,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             }}
           >
             Reports
@@ -111,7 +111,7 @@ const Reports = () => {
               <CardContent>
                 <Typography variant="h6" sx={{ 
                   color: theme.palette.text.primary,
-                  fontFamily: "'Poppins', sans-serif",
+                  fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                   fontWeight: 600,
                   mb: 2 
                 }}>
@@ -151,7 +151,7 @@ const Reports = () => {
               <CardContent>
                 <Typography variant="h6" sx={{ 
                   color: theme.palette.text.primary,
-                  fontFamily: "'Poppins', sans-serif",
+                  fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                   fontWeight: 600,
                   mb: 2 
                 }}>

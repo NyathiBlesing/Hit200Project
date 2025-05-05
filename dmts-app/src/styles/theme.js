@@ -22,7 +22,7 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     h1: {
       fontSize: '2.5rem',
       fontWeight: 500,

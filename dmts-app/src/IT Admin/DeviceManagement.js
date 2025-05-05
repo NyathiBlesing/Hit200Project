@@ -59,7 +59,7 @@ import { useNavigate } from "react-router-dom";
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: '8px',
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     color: theme.palette.text.primary,
     '& fieldset': {
       borderColor: theme.palette.divider,
@@ -72,7 +72,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
   },
   '& .MuiInputLabel-root': {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     color: theme.palette.text.secondary,
     '&.Mui-focused': {
       color: theme.palette.primary.main,
@@ -338,7 +338,7 @@ const DeviceManagement = () => {
                 >
                   <TableCell 
                     sx={theme => ({ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       color: theme.palette.text.primary,
                       borderBottom: `1px solid ${theme.palette.divider}`,
                     })}
@@ -347,7 +347,7 @@ const DeviceManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={theme => ({ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       color: theme.palette.text.primary,
                       borderBottom: `1px solid ${theme.palette.divider}`,
                     })}
@@ -359,7 +359,7 @@ const DeviceManagement = () => {
       color="primary"
       size="small"
       sx={{
-        fontFamily: "'Poppins', sans-serif",
+        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
         fontWeight: 500,
       }}
     />
@@ -370,7 +370,7 @@ const DeviceManagement = () => {
     color="default"
     size="small"
     sx={{
-      fontFamily: "'Poppins', sans-serif",
+      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
       fontWeight: 500,
     }}
   />
@@ -378,7 +378,7 @@ const DeviceManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={theme => ({ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       color: theme.palette.text.primary,
                       borderBottom: `1px solid ${theme.palette.divider}`,
                     })}
@@ -387,7 +387,7 @@ const DeviceManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={theme => ({ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       color: theme.palette.text.primary,
                       borderBottom: `1px solid ${theme.palette.divider}`,
                     })}
@@ -396,7 +396,7 @@ const DeviceManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={theme => ({ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       color: theme.palette.text.primary,
                       borderBottom: `1px solid ${theme.palette.divider}`,
                     })}
@@ -409,14 +409,14 @@ const DeviceManagement = () => {
                         "warning"
                       }
                       sx={{
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                       }}
                     />
                   </TableCell>
                   <TableCell 
                     sx={theme => ({ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       color: theme.palette.text.primary,
                       borderBottom: `1px solid ${theme.palette.divider}`,
                     })}
@@ -425,7 +425,7 @@ const DeviceManagement = () => {
                   </TableCell>
                   <TableCell 
                     sx={theme => ({ 
-                      fontFamily: "'Poppins', sans-serif",
+                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                       color: theme.palette.text.primary,
                       borderBottom: `1px solid ${theme.palette.divider}`,
                     })}
@@ -523,7 +523,7 @@ const DeviceManagement = () => {
               sx={{ 
                 fontWeight: 600,
                 color: theme.palette.text.primary,
-                fontFamily: "'Poppins', sans-serif",
+                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               }}
             >
               Manage Devices
@@ -535,7 +535,7 @@ const DeviceManagement = () => {
             onClick={handleShow}
             sx={{
               backgroundColor: theme.palette.primary.main,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
               '&:hover': {
                 backgroundColor: theme.palette.primary.dark,
               },
@@ -590,7 +590,7 @@ const DeviceManagement = () => {
                   <MenuItem value="Active">Active</MenuItem>
                   <MenuItem value="Inactive">Inactive</MenuItem>
                   <MenuItem value="Flagged">Flagged</MenuItem>
-<MenuItem value="Cleared">Cleared</MenuItem>
+                  <MenuItem value="Cleared">Cleared</MenuItem>
                 </StyledSelect>
               </FormControl>
               <FormControl sx={{ minWidth: 150 }}>
@@ -628,7 +628,7 @@ const DeviceManagement = () => {
                   <TableRow>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -638,7 +638,7 @@ const DeviceManagement = () => {
                     </TableCell>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -648,7 +648,7 @@ const DeviceManagement = () => {
                     </TableCell>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -658,7 +658,7 @@ const DeviceManagement = () => {
                     </TableCell>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -668,7 +668,7 @@ const DeviceManagement = () => {
                     </TableCell>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -678,7 +678,7 @@ const DeviceManagement = () => {
                     </TableCell>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -688,7 +688,7 @@ const DeviceManagement = () => {
                     </TableCell>
                     <TableCell 
                       sx={{ 
-                        fontFamily: "'Poppins', sans-serif",
+                        fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                         fontWeight: 500,
                         color: theme.palette.text.secondary,
                         borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
@@ -703,6 +703,7 @@ const DeviceManagement = () => {
                     <TableRow key={device.serial_number}>
                       <TableCell 
                         sx={{ 
+                          fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                         }}
@@ -711,6 +712,7 @@ const DeviceManagement = () => {
                       </TableCell>
                       <TableCell 
                         sx={{ 
+                          fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                         }}
@@ -722,7 +724,7 @@ const DeviceManagement = () => {
                               color="primary"
                               size="small"
                               sx={{
-                                fontFamily: "'Poppins', sans-serif",
+                                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                 fontWeight: 500,
                               }}
                             />
@@ -730,7 +732,7 @@ const DeviceManagement = () => {
                               variant="caption" 
                               sx={{ 
                                 color: 'rgba(255, 255, 255, 0.7)',
-                                fontFamily: "'Poppins', sans-serif",
+                                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                               }}
                             >
                               {device.assigned_to.role} • {device.assigned_to.department || 'No Department'}
@@ -742,7 +744,7 @@ const DeviceManagement = () => {
                             color="default"
                             size="small"
                             sx={{
-                              fontFamily: "'Poppins', sans-serif",
+                              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                               fontWeight: 500,
                             }}
                           />
@@ -750,6 +752,7 @@ const DeviceManagement = () => {
                       </TableCell>
                       <TableCell 
                         sx={{ 
+                          fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                         }}
@@ -761,6 +764,7 @@ const DeviceManagement = () => {
                       </TableCell>
                       <TableCell 
                         sx={{ 
+                          fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                         }}
@@ -769,6 +773,7 @@ const DeviceManagement = () => {
                       </TableCell>
                       <TableCell 
                         sx={{ 
+                          fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                           color: theme.palette.text.primary,
                           borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                         }}
@@ -777,6 +782,7 @@ const DeviceManagement = () => {
                       </TableCell>
                       <TableCell 
                         sx={{ 
+                          fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                           borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                         }}
                       >
@@ -784,11 +790,12 @@ const DeviceManagement = () => {
                           label={device.status}
                           color={getStatusColor(device.status)}
                           size="small"
-                          sx={{ fontFamily: "'Poppins', sans-serif" }}
+                          sx={{ fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}
                         />
                       </TableCell>
                       <TableCell 
                         sx={{ 
+                          fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                           borderBottom: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
                         }}
                       >
@@ -837,7 +844,7 @@ const DeviceManagement = () => {
             }
           }}
         >
-          <DialogTitle sx={{ color: theme.palette.text.primary, fontFamily: "'Poppins', sans-serif" }}>
+          <DialogTitle sx={{ color: theme.palette.text.primary, fontFamily: 'Century, Century Gothic, Arial, sans-serif' }}>
             {editingDevice ? 'Edit Device' : 'Register New Device'}
           </DialogTitle>
           <form onSubmit={handleSubmit}>
@@ -954,7 +961,7 @@ const DeviceManagement = () => {
                 onClick={handleClose}
                 sx={{
                   color: theme.palette.text.secondary,
-                  fontFamily: "'Poppins', sans-serif",
+                  fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                   '&:hover': {
                     color: theme.palette.text.primary,
                   },
@@ -968,7 +975,7 @@ const DeviceManagement = () => {
                 startIcon={editingDevice ? <EditIcon /> : <AddIcon />}
                 sx={{
                   backgroundColor: theme.palette.primary.main,
-                  fontFamily: "'Poppins', sans-serif",
+                  fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                   textTransform: 'none',
                   '&:hover': {
                     backgroundColor: theme.palette.primary.dark,

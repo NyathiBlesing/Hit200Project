@@ -205,7 +205,7 @@ const EmployeeDashboard = () => {
   };
 
   const cardHeaderStyle = {
-    fontFamily: "'Poppins', sans-serif",
+    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
     fontWeight: 600,
     color: theme.palette.text.primary,
     marginBottom: 2,
@@ -219,7 +219,7 @@ const EmployeeDashboard = () => {
         position: 'bottom',
         labels: {
           font: {
-            family: "'Poppins', sans-serif",
+            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             size: 12,
             color: theme.palette.text.secondary,
           },
@@ -235,7 +235,7 @@ const EmployeeDashboard = () => {
         beginAtZero: true,
         ticks: {
           font: {
-            family: "'Poppins', sans-serif",
+            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             size: 12,
             color: theme.palette.text.secondary,
           },
@@ -247,7 +247,7 @@ const EmployeeDashboard = () => {
       x: {
         ticks: {
           font: {
-            family: "'Poppins', sans-serif",
+            fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             size: 12,
             color: theme.palette.text.secondary,
           },
@@ -284,7 +284,7 @@ const EmployeeDashboard = () => {
             sx={{ 
               fontWeight: 600,
               color: theme.palette.text.primary,
-              fontFamily: "'Poppins', sans-serif",
+              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
             }}
           >
             Employee Dashboard
@@ -313,7 +313,7 @@ const EmployeeDashboard = () => {
                           labels: {
                             color: theme.palette.text.primary,
                             font: {
-                              family: "'Poppins', sans-serif",
+                              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                             },
                           },
                         },
@@ -348,7 +348,7 @@ const EmployeeDashboard = () => {
                           ticks: {
                             color: theme.palette.text.secondary,
                             font: {
-                              family: "'Poppins', sans-serif",
+                              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                             },
                           },
                           grid: {
@@ -359,7 +359,7 @@ const EmployeeDashboard = () => {
                           ticks: {
                             color: theme.palette.text.secondary,
                             font: {
-                              family: "'Poppins', sans-serif",
+                              fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                             },
                           },
                           grid: {
@@ -451,7 +451,7 @@ const EmployeeDashboard = () => {
                           <ListItemText
                             primary={
                               <Typography sx={{ 
-                                fontFamily: "'Poppins', sans-serif",
+                                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                 fontWeight: 500,
                                 color: theme.palette.text.primary
                               }}>
@@ -460,7 +460,7 @@ const EmployeeDashboard = () => {
                             }
                             secondary={
                               <Typography sx={{ 
-                                fontFamily: "'Poppins', sans-serif",
+                                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                 color: theme.palette.text.secondary
                               }}>
                                 Type: {device.type} | Location: {device.location}
@@ -475,7 +475,7 @@ const EmployeeDashboard = () => {
                               size="small"
                               sx={{ 
                                 mr: 1,
-                                fontFamily: "'Poppins', sans-serif",
+                                fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                 borderRadius: '4px',
                               }}
                             />
@@ -518,7 +518,7 @@ const EmployeeDashboard = () => {
                                 <Typography 
                                   sx={{ 
                                     color: theme.palette.text.primary,
-                                    fontFamily: "'Poppins', sans-serif",
+                                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                   }}
                                 >
                                   {issue.description}
@@ -528,7 +528,7 @@ const EmployeeDashboard = () => {
                                     variant="body2" 
                                     sx={{ 
                                       color: theme.palette.text.secondary,
-                                      fontFamily: "'Poppins', sans-serif",
+                                      fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                       mt: 1,
                                       fontStyle: 'italic',
                                     }}
@@ -544,7 +544,7 @@ const EmployeeDashboard = () => {
                                   variant="body2" 
                                   sx={{ 
                                     color: theme.palette.text.secondary,
-                                    fontFamily: "'Poppins', sans-serif",
+                                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                   }}
                                 >
                                   {new Date(issue.created_at).toLocaleDateString()}
@@ -559,7 +559,7 @@ const EmployeeDashboard = () => {
                                     "default"
                                   }
                                   sx={{
-                                    fontFamily: "'Poppins', sans-serif",
+                                    fontFamily: 'Century, Century Gothic, Arial, sans-serif',
                                     fontWeight: 500,
                                   }}
                                 />
