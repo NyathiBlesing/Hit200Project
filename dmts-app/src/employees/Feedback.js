@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAlert } from "../components/AlertContext";
 import {
   Box,
   Container,
@@ -23,23 +24,23 @@ import {
 import Sidebar from "../components/Sidebar";
 
 const Feedback = () => {
+  const { showAlert } = useAlert();
   const theme = useTheme();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  
   const [feedbackList, setFeedbackList] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       // TODO: Implement feedback submission
-      setSuccess(true);
+      showAlert("Thank you for your feedback!", "success");
       setRating(0);
       setComment('');
       setFeedbackList([...feedbackList, { rating, comment, date: new Date() }]);
     } catch (error) {
-      setError('Failed to submit feedback');
+      showAlert('Failed to submit feedback', 'error');
       console.error('Error submitting feedback:', error);
     }
   };
@@ -67,17 +68,7 @@ const Feedback = () => {
           Feedback
         </Typography>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
-
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess(false)}>
-            Thank you for your feedback!
-          </Alert>
-        )}
+        
 
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>

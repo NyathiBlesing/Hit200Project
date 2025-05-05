@@ -16,7 +16,7 @@ const Layout = ({ children }) => {
   }
 
   return (
-    <Box sx={{ position: 'relative', minHeight: '100vh' }}>
+    <Box sx={{ position: 'relative', minHeight: '100vh', width: '100%', px: { xs: 0, sm: 2 } }}>
       {children}
       <Box
         sx={{

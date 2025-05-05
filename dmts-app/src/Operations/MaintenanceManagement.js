@@ -280,37 +280,9 @@ const MaintenanceManagement = () => {
           </Button>
         </Box>
 
-        {error && (
-          <Alert 
-            severity="error" 
-            sx={{ 
-              mb: 2,
-              borderRadius: "12px",
-              backgroundColor: "rgba(239, 68, 68, 0.1)",
-              color: "#ef4444",
-              border: "1px solid rgba(239, 68, 68, 0.2)",
-            }}
-            onClose={() => setError(null)}
-          >
-            {error}
-          </Alert>
-        )}
+        
 
-        {success && (
-          <Alert 
-            severity="success" 
-            sx={{ 
-              mb: 2,
-              borderRadius: "12px",
-              backgroundColor: "rgba(34, 197, 94, 0.1)",
-              color: "#22c55e",
-              border: "1px solid rgba(34, 197, 94, 0.2)",
-            }}
-            onClose={() => setSuccess(null)}
-          >
-            {success}
-          </Alert>
-        )}
+        
 
         <StyledCard>
           <CardContent>

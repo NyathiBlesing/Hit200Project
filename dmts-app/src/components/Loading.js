@@ -15,7 +15,7 @@ const Loading = ({ onFinish }) => {
           if (prev < 100) return prev + 1;
           return 100;
         });
-      }, 100);
+      }, 50);
     } else if (progress === 100) {
       // Wait 400ms to allow the bar to visually fill
       const timeout = setTimeout(() => {

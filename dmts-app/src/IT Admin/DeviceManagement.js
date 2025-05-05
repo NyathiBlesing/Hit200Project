@@ -242,9 +242,7 @@ const DeviceManagement = () => {
   };
 
   const handleChange = (e) => {
-    if (e.target.name === "picture") {
-      setForm({ ...form, picture: e.target.files[0] });
-    } else if (e.target.name === "assigned_to_id") {
+    if (e.target.name === "assigned_to_id") {
       setForm({ ...form, assigned_to_id: e.target.value || null });
     } else {
       setForm({ ...form, [e.target.name]: e.target.value });
@@ -355,18 +353,6 @@ const DeviceManagement = () => {
                     })}
                   >
           {device.assigned_to ? (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              <Chip
-                label={device.assigned_to.username}
-                color="primary"
-                size="small"
-                sx={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 500,
-                }}
-              />
-              <>
-  {console.log('ASSIGNED BLOCK:', device)}
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
     <Chip
       label={device.assigned_to.username}
@@ -377,35 +363,18 @@ const DeviceManagement = () => {
         fontWeight: 500,
       }}
     />
-    <Typography 
-      variant="caption" 
-      sx={{
-        color: '#111',
-        backgroundColor: '#f5f5f5',
-        fontWeight: 'bold',
-        borderRadius: '6px',
-        padding: '2px 8px',
-        marginTop: '4px',
-        display: 'inline-block',
-        fontFamily: "'Poppins', sans-serif",
-      }}
-    >
-      {"TEST TEXT"}
-    </Typography>
   </Box>
-</>
-            </Box>
-          ) : (
-            <Chip
-              label="Unassigned"
-              color="default"
-              size="small"
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                fontWeight: 500,
-              }}
-            />
-          )}
+) : (
+  <Chip
+    label="Unassigned"
+    color="default"
+    size="small"
+    sx={{
+      fontFamily: "'Poppins', sans-serif",
+      fontWeight: 500,
+    }}
+  />
+)}
                   </TableCell>
                   <TableCell 
                     sx={theme => ({ 
@@ -576,21 +545,7 @@ const DeviceManagement = () => {
           </Button>
         </Box>
 
-        {error && (
-          <Alert 
-            severity="error" 
-            sx={{ 
-              mb: 2,
-              borderRadius: "12px",
-              backgroundColor: theme.palette.error.light,
-              color: theme.palette.error.main,
-              border: `1px solid ${theme.palette.error.main}`,
-            }}
-            onClose={() => setError(null)}
-          >
-            {error}
-          </Alert>
-        )}
+        
 
         <StyledCard>
           <CardContent>
@@ -991,15 +946,7 @@ const DeviceManagement = () => {
                   value={form.location}
                   onChange={handleChange}
                 />
-                <StyledTextField
-                  fullWidth
-                  type="file"
-                  name="picture"
-                  onChange={handleChange}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
+
               </Box>
             </DialogContent>
             <DialogActions sx={{ p: 3 }}>

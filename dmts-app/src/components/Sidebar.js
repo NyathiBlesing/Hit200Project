@@ -34,11 +34,24 @@ const StyledSidebar = styled(Box)(({ theme }) => ({
   width: '250px',
   height: '100vh',
   position: 'fixed',
+  left: 0,
+  top: 0,
   backgroundColor: '#1a1a1a',
   color: 'white',
   display: 'flex',
   flexDirection: 'column',
   borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+  zIndex: 1200,
+  [theme.breakpoints.down('sm')]: {
+    width: '60px',
+    minWidth: '60px',
+    '& .MuiListItemText-root': {
+      display: 'none',
+    },
+    '& .MuiTypography-root': {
+      display: 'none',
+    },
+  },
 }));
 
 const StyledListItem = styled(ListItem)(({ theme, active }) => ({

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useAlert } from "./AlertContext";
 import {
   Box,
   Paper,
@@ -26,6 +27,7 @@ import Sidebar from './Sidebar';
 import { userAPI } from '../api/api';
 
 const Settings = () => {
+  const { showAlert } = useAlert();
   const theme = useMuiTheme();
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -42,8 +44,7 @@ const Settings = () => {
     deviceAlerts: true,
     maintenanceReminders: true,
   });
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  
 
   useEffect(() => {
     fetchUserData();
@@ -63,7 +64,7 @@ const Settings = () => {
         confirm_password: '',
       });
     } catch (err) {
-      setError('Failed to fetch user data');
+      showAlert('Failed to fetch user data', 'error');
     }
   };
 
@@ -84,13 +85,10 @@ const Settings = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
-
     try {
       if (formData.new_password) {
         if (formData.new_password !== formData.confirm_password) {
-          setError('New passwords do not match');
+          showAlert('New passwords do not match', 'error');
           return;
         }
       }
@@ -103,11 +101,11 @@ const Settings = () => {
       };
 
       await userAPI.updateUser(user.id, updateData);
-      setSuccess('Settings updated successfully');
+      showAlert('Settings updated successfully', 'success');
       setIsEditing(false);
       fetchUserData();
     } catch (err) {
-      setError('Failed to update settings');
+      showAlert('Failed to update settings', 'error');
     }
   };
 

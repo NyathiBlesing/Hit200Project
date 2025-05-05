@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Loading from "./components/Loading";
+import { AlertProvider } from "./components/AlertContext";
 import { Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -32,10 +33,11 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Layout>
-        <Routes>
+    <AlertProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Layout>
+          <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -159,6 +161,7 @@ function App() {
         </Routes>
       </Layout>
     </ThemeProvider>
+    </AlertProvider>
   );
 }
 

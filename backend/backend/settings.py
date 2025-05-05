@@ -76,11 +76,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Email Configuration - Development (File-based)
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'  # Emails will be saved here
-DEFAULT_FROM_EMAIL = 'dmts@example.com'
+# Email Configuration - Gmail SMTP (Production)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get('GMAIL_USER', 'your_gmail_address@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD', 'your_gmail_app_password')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# IMPORTANT: For security, set GMAIL_USER and GMAIL_APP_PASSWORD in your environment or .env file, not in code!
+# See: https://support.google.com/accounts/answer/185833?hl=en for generating an App Password.
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -92,7 +98,7 @@ DATABASES = {
         'HOST': 'ballast.proxy.rlwy.net',  # From URL
         'PORT': 13156,                     # From URL
         'USER': 'root',                    # From URL
-        'PASSWORD': 'IXBQMDNrPIOcyLZlVcKlFIhXTxkrfFqr',  # Store password securely
+        'PASSWORD': 'IXBQMDNrPIOcyLZlVcKlFIhXTxkrfFqr',  
         'NAME': 'railway',                 # From URL
         }
     }

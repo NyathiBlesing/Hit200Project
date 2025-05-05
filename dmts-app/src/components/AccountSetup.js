@@ -20,7 +20,12 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   boxShadow: theme.shadows[2],
   border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
   width: '100%',
-  maxWidth: '400px',
+  maxWidth: 400,
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+    borderRadius: '8px',
+    maxWidth: '100%',
+  },
 }));
 
 const StyledForm = styled('form')(({ theme }) => ({

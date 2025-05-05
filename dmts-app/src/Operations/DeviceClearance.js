@@ -161,7 +161,7 @@ const Clearance = () => {
             </Select>
           </FormControl>
         </Box>
-        {statusMessage && <Alert severity="success" sx={{ mb: 2 }}>{statusMessage}</Alert>}
+        
 
         <Card sx={{ mb: 3, borderRadius: 3, boxShadow: 2 }}>
           <CardContent>
@@ -353,19 +353,7 @@ const DeviceClearance = ({ open, device, onClose, onClearanceComplete }) => {
               },
             })}
           />
-          {error && (
-            <Alert 
-              severity="error" 
-              sx={(theme) => ({
-                mt: 2,
-                backgroundColor: theme.palette.error.light,
-                color: theme.palette.error.main,
-                border: `1px solid ${theme.palette.error.main}`,
-              })}
-            >
-              {error}
-            </Alert>
-          )}
+          
         </Box>
       </DialogContent>
       <DialogActions sx={(theme) => ({ borderTop: `1px solid ${theme.palette.divider}`, p: 2 })}>

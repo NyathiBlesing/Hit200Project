@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useAlert } from "./AlertContext";
 import { useNavigate, Link } from "react-router-dom";
 import {
   Box,
@@ -29,6 +30,14 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: "#1a1a1a",
   color: "white",
   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+  width: '100%',
+  maxWidth: 400,
+  [theme.breakpoints.down('sm')]: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(2),
+    maxWidth: '100%',
+    borderRadius: '8px',
+  },
 }));
 
 const StyledForm = styled("form")(({ theme }) => ({
@@ -67,6 +76,7 @@ const StyledTextField = styled(TextField)({
 
 
 const Signup = () => {
+  const { showAlert } = useAlert();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const theme = useTheme();
@@ -78,7 +88,7 @@ const Signup = () => {
     confirmPassword: "",
     role: "Admin",
   });
-  const [error, setError] = useState("");
+  
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
@@ -97,20 +107,20 @@ const Signup = () => {
     // Username validation
     const usernameRegex = /^[a-zA-Z0-9_]{4,}$/;
     if (!usernameRegex.test(formData.username)) {
-      setError("Username must be at least 4 characters and contain only letters, numbers, or underscores.");
+      showAlert("Username must be at least 4 characters and contain only letters, numbers, or underscores.", "error");
       setLoading(false);
       return;
     }
     // Password validation
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!passwordRegex.test(formData.password)) {
-      setError("Password must be at least 8 characters, include uppercase, lowercase, a number, and a special character.");
+      showAlert("Password must be at least 8 characters, contain uppercase, lowercase, number, and special character.", "error");
       setLoading(false);
       return;
     }
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      showAlert("Passwords do not match", "error");
       setLoading(false);
       return;
     }
@@ -145,7 +155,7 @@ const Signup = () => {
 
 
       // Show success message and redirect based on role
-      setError("");
+      showAlert("Signup successful! Redirecting...", "success");
       if (userData.role === "Admin") {
         navigate("/admin-dashboard");
       } else {
@@ -153,9 +163,10 @@ const Signup = () => {
       }
     } catch (error) {
       console.error("Signup Error:", error.response?.data || error.message);
-      setError(
+      showAlert(
         error.response?.data?.error || 
-        (Array.isArray(error.response?.data) ? error.response.data[0] : "Failed to create account")
+        (Array.isArray(error.response?.data) ? error.response.data[0] : "Failed to create account"),
+        "error"
       );
     } finally {
       setLoading(false);
@@ -216,24 +227,7 @@ const Signup = () => {
             </Typography>
           </Box>
 
-          {error && (
-            <Alert 
-              severity="error" 
-              sx={{ 
-                width: "100%", 
-                mb: 2,
-                borderRadius: "12px",
-                backgroundColor: "rgba(239, 68, 68, 0.1)",
-                color: "#ef4444",
-                border: "1px solid rgba(239, 68, 68, 0.2)",
-                '& .MuiAlert-icon': {
-                  color: "#ef4444"
-                }
-              }}
-            >
-              {error}
-            </Alert>
-          )}
+          
 
           <StyledForm onSubmit={handleSubmit}>
             <Typography 

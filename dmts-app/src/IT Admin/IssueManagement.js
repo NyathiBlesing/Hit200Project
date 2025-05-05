@@ -456,26 +456,9 @@ const IssueManagement = () => {
           </IconButton>
         </Box>
 
-        {success && (
-          <Alert 
-            severity="success" 
-            sx={{ mb: 2 }} 
-            onClose={() => setSuccess(null)}
-            action={
-              <Button color="inherit" size="small" onClick={() => setSuccess(null)}>
-                UNDO
-              </Button>
-            }
-          >
-            {success}
-          </Alert>
-        )}
+        
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
+        
 
         <StyledCard>
           <CardContent>

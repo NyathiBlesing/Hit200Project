@@ -864,13 +864,11 @@ class SignupView(APIView):
             # Create admin user
             username = request.data.get('username')
             email = request.data.get('email')
-            department = 'IT'
             password = request.data.get('password')
             print(f"SIGNUP DEBUG: username='{username}', password='{password}'")
             user = CustomUser(
                 email=email,
                 username=username,
-                department=department,
                 role='Admin',
                 is_staff=True
             )
@@ -885,7 +883,6 @@ class SignupView(APIView):
                     'id': user.id,
                     'username': user.username,
                     'email': user.email,
-                    'department': user.department,
                     'role': user.role
                 },
                 'access': str(refresh.access_token),

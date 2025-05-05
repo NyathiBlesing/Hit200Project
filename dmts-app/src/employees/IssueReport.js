@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAlert } from "../components/AlertContext";
 import {
   Box,
   Container,
@@ -20,6 +21,7 @@ import Sidebar from "../components/Sidebar";
 import { issueAPI, deviceAPI } from "../api/api";
 
 const IssueReport = () => {
+  const { showAlert } = useAlert();
   const theme = useTheme();
   const [formData, setFormData] = useState({
     device_serial: "",
@@ -27,8 +29,7 @@ const IssueReport = () => {
     priority: "Medium",
   });
   const [devices, setDevices] = useState([]);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  
   const [loading, setLoading] = useState({
     devices: true,
     submission: false
@@ -42,7 +43,7 @@ const IssueReport = () => {
         const assignedDevices = await deviceAPI.getAssignedDevices(userId);
         setDevices(assignedDevices);
       } catch (err) {
-        setError("Failed to load devices. Please refresh the page.");
+        showAlert("Failed to load devices. Please refresh the page.", "error");
       } finally {
         setLoading(prev => ({ ...prev, devices: false }));
       }
@@ -58,8 +59,6 @@ const IssueReport = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(false);
     setLoading(prev => ({ ...prev, submission: true }));
 
     try {
@@ -73,10 +72,10 @@ const IssueReport = () => {
         priority: formData.priority,
       });
 
-      setSuccess(true);
+      showAlert("Issue submitted successfully!", "success");
       setFormData({ device_serial: "", description: "", priority: "Medium" });
     } catch (err) {
-      setError(err.message || "Failed to submit issue. Please try again.");
+      showAlert(err.message || "Failed to submit issue. Please try again.", "error");
     } finally {
       setLoading(prev => ({ ...prev, submission: false }));
     }
@@ -119,26 +118,6 @@ const IssueReport = () => {
           }}
         >
           <CardContent sx={{ p: 3 }}>
-            {success && (
-              <Alert 
-                severity="success" 
-                sx={{ mb: 3 }}
-                onClose={() => setSuccess(false)}
-              >
-                Issue reported successfully!
-              </Alert>
-            )}
-            
-            {error && (
-              <Alert 
-                severity="error" 
-                sx={{ mb: 3 }}
-                onClose={() => setError(null)}
-              >
-                {error}
-              </Alert>
-            )}
-
             <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
               <FormControl fullWidth>
                 <InputLabel sx={{ color: theme.palette.text.secondary }}>Select Device</InputLabel>

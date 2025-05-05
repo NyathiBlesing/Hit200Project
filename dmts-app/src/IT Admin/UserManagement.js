@@ -40,6 +40,7 @@ import {
 } from "@mui/icons-material";
 import Sidebar from "../components/Sidebar";
 import { userAPI } from "../api/api";
+import { useAlert } from "../components/AlertContext";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : 'white',
@@ -50,6 +51,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const UserManagement = () => {
+  const { showAlert } = useAlert();
   const theme = useTheme();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -83,6 +85,9 @@ const UserManagement = () => {
       setUsers(response);
       setError(null);
     } catch (err) {
+      if (typeof showAlert === 'function') {
+        showAlert('Failed to fetch users. Please try again later.', 'error');
+      }
       setError('Failed to fetch users. Please try again later.');
     } finally {
       setLoading(false);
@@ -137,25 +142,41 @@ const UserManagement = () => {
 
       if (selectedUser) {
         await userAPI.updateUser(selectedUser.id, userData);
-        setSuccessMessage('User updated successfully');
+        if (typeof showAlert === 'function') {
+          showAlert('User updated successfully', 'success');
+        }
       } else {
         const response = await userAPI.createUser(userData);
+        if (typeof showAlert === 'function') {
+          showAlert('User created successfully. A setup email has been sent to ' + userData.email, 'success');
+        }
         setSuccessMessage('User created successfully. A setup email has been sent to ' + userData.email);
       }
       fetchUsers();
       handleCloseDialog();
     } catch (err) {
       console.error('Error saving user:', err);
+      if (typeof showAlert === 'function') {
+        showAlert(err.response?.data?.error || 'Failed to save user. Please try again.', 'error');
+      }
       setError(err.response?.data?.error || 'Failed to save user. Please try again.');
     }
   };
 
   const handleDelete = async (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
+    // Replace window.confirm with a showAlert for confirmation (requires custom dialog for true async confirm)
+    const confirmed = window.confirm('Are you sure you want to delete this user?');
+    if (confirmed) {
       try {
         await userAPI.deleteUser(userId);
+        if (typeof showAlert === 'function') {
+          showAlert('User deleted successfully', 'success');
+        }
         fetchUsers();
       } catch (err) {
+        if (typeof showAlert === 'function') {
+          showAlert('Failed to delete user. Please try again.', 'error');
+        }
         setError('Failed to delete user. Please try again.');
       }
     }
@@ -250,11 +271,7 @@ const UserManagement = () => {
           </Button>
         </Box>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
+        
 
         <StyledCard>
           <CardContent>

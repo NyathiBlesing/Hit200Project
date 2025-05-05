@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useAlert } from "./AlertContext";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import {
@@ -29,6 +30,14 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: "#1a1a1a",
   color: "white",
   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+  width: '100%',
+  maxWidth: 400,
+  [theme.breakpoints.down('sm')]: {
+    marginTop: theme.spacing(2),
+    padding: theme.spacing(2),
+    maxWidth: '100%',
+    borderRadius: '8px',
+  },
 }));
 
 const StyledForm = styled("form")(({ theme }) => ({
@@ -62,11 +71,12 @@ const StyledTextField = styled(TextField)({
 
 
 const Login = () => {
+  const { showAlert } = useAlert();
   const [showPassword, setShowPassword] = useState(false);
   const theme = useTheme();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -97,7 +107,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    
 
     try {
       const response = await authAPI.login({ username, password });
@@ -113,8 +123,7 @@ const Login = () => {
       localStorage.setItem("email", userData.email);
       localStorage.setItem("username", userData.username);
       localStorage.setItem("department", userData.department);
-      localStorage.setItem("first_name", userData.first_name);
-      localStorage.setItem("last_name", userData.last_name);
+
 
       console.log("Login Successful! Role:", userData.role);
 
@@ -127,7 +136,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Login Error:", error.response?.data || error.message);
-      setError(error.response?.data?.detail || "Invalid username or password");
+      showAlert(error.response?.data?.detail || "Invalid username or password", "error");
     } finally {
       setLoading(false);
     }
@@ -186,24 +195,7 @@ const Login = () => {
             </Typography>
           </Box>
 
-          {error && (
-            <Alert 
-              severity="error" 
-              sx={{ 
-                width: "100%", 
-                mb: 2,
-                borderRadius: "12px",
-                backgroundColor: "rgba(239, 68, 68, 0.1)",
-                color: "#ef4444",
-                border: "1px solid rgba(239, 68, 68, 0.2)",
-                '& .MuiAlert-icon': {
-                  color: "#ef4444"
-                }
-              }}
-            >
-              {error}
-            </Alert>
-          )}
+          
 
           <StyledForm onSubmit={handleSubmit}>
             <StyledTextField

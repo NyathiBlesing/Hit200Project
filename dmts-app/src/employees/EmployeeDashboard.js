@@ -292,11 +292,7 @@ const EmployeeDashboard = () => {
 
         </Box>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
+        
 
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -491,9 +487,9 @@ const EmployeeDashboard = () => {
                     ))}
                   </List>
                 ) : (
-                  <Alert severity="info" sx={{ borderRadius: "8px" }}>
-                    No devices assigned to you.
-                  </Alert>
+                  <Typography variant="body2" color="text.secondary" align="center">
+  No devices assigned to you.
+</Typography>
                 )}
               </CardContent>
             </Card>
@@ -576,9 +572,9 @@ const EmployeeDashboard = () => {
                     ))}
                   </List>
                 ) : (
-                  <Alert severity="info" sx={{ borderRadius: "8px" }}>
+                  <Typography variant="body2" color="text.secondary" align="center">
                     No issues reported.
-                  </Alert>
+                  </Typography>
                 )}
               </CardContent>
             </Card>

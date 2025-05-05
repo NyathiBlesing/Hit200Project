@@ -16,9 +16,11 @@ import {
 import Sidebar from '../components/Sidebar';
 import axios from 'axios';
 import { useTheme } from '@mui/material/styles';
+import { useAlert } from '../components/AlertContext';
 
 const Reports = () => {
   const theme = useTheme();
+  const { showAlert } = useAlert();
 
   const handleDownload = async (reportType) => {
     try {
@@ -56,10 +58,14 @@ const Reports = () => {
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(urlBlob);
 
-      alert(`${reportType} report downloaded successfully!`);
+      if (typeof showAlert === 'function') {
+        showAlert(`${reportType} report downloaded successfully!`, 'success');
+      }
     } catch (error) {
       console.error(`Error downloading ${reportType} report:`, error);
-      alert(`Failed to download ${reportType} report. Please try again.`);
+      if (typeof showAlert === 'function') {
+        showAlert(`Failed to download ${reportType} report. Please try again.`, 'error');
+      }
     }
   };
 

@@ -236,21 +236,6 @@ const AuditLogs = () => {
             </Button>
           </Box>
 
-          {error && (
-            <Alert 
-              severity="error" 
-              sx={{ mb: 2 }} 
-              onClose={() => setError(null)}
-              action={
-                <Button color="inherit" size="small" onClick={fetchLogs}>
-                  Retry
-                </Button>
-              }
-            >
-              {error}
-            </Alert>
-          )}
-
           <StyledCard sx={{ mb: 3 }}>
             <CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

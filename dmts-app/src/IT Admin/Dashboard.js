@@ -146,6 +146,14 @@ const StatCard = ({ title, value, icon, color }) => {
 };
 
 const Dashboard = () => {
+  // Automatically fetch dashboard data on mount
+  useEffect(() => {
+    fetchData();
+    // Set up polling for real-time updates
+    const interval = setInterval(fetchData, 100000); 
+    return () => clearInterval(interval);
+  }, []);
+  
   const theme = useTheme();
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState({
@@ -219,13 +227,6 @@ const Dashboard = () => {
         setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchData();
-    // Set up polling for real-time updates
-    const interval = setInterval(fetchData, 30000); // Update every 30 seconds
-    return () => clearInterval(interval);
-  }, []);
 
   const chartOptions = {
     responsive: true,
@@ -332,11 +333,7 @@ const Dashboard = () => {
           </Button>
         </Box>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
-            {error}
-          </Alert>
-        )}
+        
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
