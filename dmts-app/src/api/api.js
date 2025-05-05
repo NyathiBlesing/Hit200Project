@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Base URLs
-const BASE_URL = "https://hit200project.onrender.com";
+const BASE_URL = "https://hit200project.onrender.com/";
 
 // Axios instance with default headers
 const axiosInstance = axios.create({
