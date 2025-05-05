@@ -27,6 +27,8 @@ import Sidebar from './Sidebar';
 import { userAPI } from '../api/api';
 
 const Settings = () => {
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const { showAlert } = useAlert();
   const theme = useMuiTheme();
   const [user, setUser] = useState(null);

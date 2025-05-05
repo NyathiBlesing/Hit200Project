@@ -76,6 +76,7 @@ const StyledTextField = styled(TextField)({
 
 
 const Signup = () => {
+  const [error, setError] = useState("");
   const { showAlert } = useAlert();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
