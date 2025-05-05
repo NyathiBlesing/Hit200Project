@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // Base URLs
-const BASE_URL = "https://hit200project.onrender.com/api/";
+const BASE_URL = "https://hit200project.onrender.com";
 
 // Axios instance with default headers
 const axiosInstance = axios.create({
@@ -585,6 +585,11 @@ export const authAPI = {
     } catch (error) {
       handleApiError(error, "Login failed. Please check your credentials.");
     }
+  },
+
+  changePassword: async ({ userId, newPassword }) => {
+    const response = await axiosInstance.post('auth/change-password/', { user_id: userId, new_password: newPassword });
+    return response.data;
   },
 
   logout: () => {

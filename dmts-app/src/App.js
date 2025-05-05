@@ -7,6 +7,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import theme from "./styles/theme";
 import Layout from "./components/Layout";
 import Login from "./components/Login";
+import ForcePasswordChange from "./components/ForcePasswordChange";
 import Signup from "./components/Signup";
 import AccountSetup from "./components/AccountSetup";
 import AdminDashboard from "./IT Admin/Dashboard";
@@ -40,6 +41,7 @@ function App() {
           <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/force-password-change" element={<ForcePasswordChange userId={localStorage.getItem('user_id')} />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/setup-account/:token" element={<AccountSetup />} />
 

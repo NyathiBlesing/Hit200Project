@@ -112,18 +112,22 @@ const Login = () => {
     try {
       const response = await authAPI.login({ username, password });
       
+      // Store user information
+      const userData = response.user;
+      if (userData.must_change_password) {
+        // Store only user id for password change
+        localStorage.setItem("user_id", userData.id);
+        navigate("/force-password-change");
+        return;
+      }
       // Store tokens
       localStorage.setItem("access_token", response.access);
       localStorage.setItem("refresh_token", response.refresh);
-      
-      // Store user information
-      const userData = response.user;
       localStorage.setItem("role", userData.role);
       localStorage.setItem("user_id", userData.id);
       localStorage.setItem("email", userData.email);
       localStorage.setItem("username", userData.username);
       localStorage.setItem("department", userData.department);
-
 
       console.log("Login Successful! Role:", userData.role);
 

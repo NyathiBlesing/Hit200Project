@@ -795,7 +795,12 @@ class CreateUserView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-            # Create user without password
+            # Generate a secure random temporary password
+            import secrets, string
+            alphabet = string.ascii_letters + string.digits
+            temp_password = ''.join(secrets.choice(alphabet) for _ in range(10))
+
+            # Create user and set temp password
             user = CustomUser.objects.create(
                 username=request.data.get('username'),
                 email=request.data.get('email'),
@@ -803,28 +808,23 @@ class CreateUserView(APIView):
                 role=request.data.get('role'),
                 phone_number=request.data.get('phone_number'),  
                 is_active=True,
-                is_staff=request.data.get('role') == 'Admin'
+                is_staff=request.data.get('role') == 'Admin',
+                must_change_password=True
             )
-
-            # Generate setup token
-            token = urlsafe_base64_encode(force_bytes(user.pk))
-
-            # Send account setup email
-            from .utils import send_account_setup_email
-            # You may want to make this configurable
-            domain = getattr(settings, 'FRONTEND_DOMAIN', 'localhost:3000')
-            send_account_setup_email(user, domain)
+            user.set_password(temp_password)
+            user.save()
 
             return Response(
                 {
-                    'message': 'User created successfully. Setup email sent.',
+                    'message': 'User created successfully. Temporary password generated.',
                     'user': {
                         'id': user.id,
                         'username': user.username,
                         'email': user.email,
                         'phone_number': user.phone_number,  
                         'role': user.role
-                    }
+                    },
+                    'temporary_password': temp_password
                 },
                 status=status.HTTP_201_CREATED
             )
