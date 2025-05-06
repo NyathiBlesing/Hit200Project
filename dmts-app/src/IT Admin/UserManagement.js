@@ -147,10 +147,12 @@ const UserManagement = () => {
         }
       } else {
         const response = await userAPI.createUser(userData);
+        const temporaryPassword = response.temporary_password;
+        
         if (typeof showAlert === 'function') {
-          showAlert('User created successfully. A setup email has been sent to ' + userData.email, 'success');
+          showAlert(`User created successfully. Temporary password: ${temporaryPassword}. Please provide this password securely to the user.`, 'success');
         }
-        setSuccessMessage('User created successfully. A setup email has been sent to ' + userData.email);
+        setSuccessMessage(`User created successfully. Temporary password: ${temporaryPassword}. Please provide this password securely to the user.`);
       }
       fetchUsers();
       handleCloseDialog();
@@ -680,4 +682,3 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
- 
