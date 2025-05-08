@@ -114,12 +114,15 @@ const Login = () => {
       
       // Store user information
       const userData = response.user;
-      if (userData.must_change_password) {
+      
+      // Only redirect to password change for Operations and Employee roles
+      if (userData.role in ['Operations', 'Employee'] && userData.must_change_password) {
         // Store only user id for password change
         localStorage.setItem("user_id", userData.id);
         navigate("/force-password-change");
         return;
       }
+
       // Store tokens
       localStorage.setItem("access_token", response.access);
       localStorage.setItem("refresh_token", response.refresh);
@@ -140,6 +143,17 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Login Error:", error.response?.data || error.message);
+      
+      // Handle password change required case for Operations and Employee roles
+      if (error.message === 'Please change your password first') {
+        const role = localStorage.getItem("role");
+        if (role in ['Operations', 'Employee']) {
+          localStorage.setItem("user_id", username); // Store username instead of id
+          navigate("/force-password-change");
+          return;
+        }
+      }
+
       showAlert(error.response?.data?.detail || "Invalid username or password", "error");
     } finally {
       setLoading(false);

@@ -13,17 +13,39 @@ const ForcePasswordChange = ({ userId, onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    
     if (!newPassword || !confirmPassword) {
       setError("Please fill in both fields.");
       return;
     }
+    
     if (newPassword !== confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
+
     setLoading(true);
     try {
-      await authAPI.changePassword({ userId, newPassword });
+      // For auto-generated passwords, we don't need userId
+      await authAPI.changePassword({
+        new_password: newPassword,
+        confirm_password: confirmPassword
+      });
+      
+      // Clear the must_change_password flag
+      const response = await fetch(`https://hit200project.onrender.com/api/users/${userId}/`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        },
+        body: JSON.stringify({ must_change_password: false })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to update user settings');
+      }
+
       if (onSuccess) onSuccess();
       else navigate("/login");
     } catch (err) {

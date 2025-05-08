@@ -961,35 +961,41 @@ def login_view(request):
         user = authenticate(username=username, password=password)
 
         if user and user.is_active:
-            # If user has changed their password, clear the must_change_password flag
-            if not user.must_change_password:
-                tokens = get_tokens_for_user(user)
-                # Only log login for IT Admins
-                if hasattr(user, 'role') and user.role == 'Admin':
-                    from .utils import create_audit_log
-                    create_audit_log(
-                        request=request,
-                        action='LOGIN',
-                        resource_type='USER',
-                        resource_id=user.id,
-                        description=f'User {user.username} logged in'
-                    )
-                return Response({
-                    'access': tokens['access'],
-                    'refresh': tokens['refresh'],
-                    'user': {
-                        'id': user.id,
-                        'username': user.username,
-                        'email': user.email,
-                        'role': user.role,
-                        'department': user.department,
-                    }
-                })
-            else:
-                return Response({
-                    'error': 'Please change your password first',
-                    'must_change_password': True
-                }, status=status.HTTP_400_BAD_REQUEST)
+            # Only require password change for Operations and Employee roles with auto-generated passwords
+            if user.role in ['Operations', 'Employee'] and user.must_change_password:
+                # Check if this is an auto-generated password
+                try:
+                    user.refresh_from_db()
+                    if user.password.startswith('auto_'):
+                        return Response({
+                            'error': 'Please change your password first',
+                            'must_change_password': True
+                        }, status=status.HTTP_400_BAD_REQUEST)
+                except Exception as e:
+                    print(f"Error checking password: {str(e)}")
+            
+            tokens = get_tokens_for_user(user)
+            # Only log login for IT Admins
+            if hasattr(user, 'role') and user.role == 'Admin':
+                from .utils import create_audit_log
+                create_audit_log(
+                    request=request,
+                    action='LOGIN',
+                    resource_type='USER',
+                    resource_id=user.id,
+                    description=f'User {user.username} logged in'
+                )
+            return Response({
+                'access': tokens['access'],
+                'refresh': tokens['refresh'],
+                'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                    'role': user.role,
+                    'department': user.department,
+                }
+            })
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -1002,52 +1008,31 @@ def login_view(request):
 @permission_classes([permissions.IsAuthenticated])
 def change_password_view(request):
     try:
-        current_password = request.data.get('current_password')
-        new_password = request.data.get('new_password')
-        confirm_password = request.data.get('confirm_password')
-
-        if not new_password or not confirm_password:
-            return Response({'error': 'New password fields are required'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if new_password != confirm_password:
-            return Response({'error': 'New passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
-
         user = request.user
         
-        # For auto-generated passwords, allow password change without current password
-        if user.must_change_password:
-            # Skip current password check for auto-generated passwords
-            pass
-        else:
-            # Verify current password for regular password changes
-            if not user.check_password(current_password):
-                return Response({'error': 'Current password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Validate new password
-        try:
-            validate_password(new_password)
-        except ValidationError as e:
-            return Response({'error': e.messages}, status=status.HTTP_400_BAD_REQUEST)
-
+        if user.role not in ['Operations', 'Employee']:
+            return Response({'error': 'Password change not required for your role'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+        
+        if not new_password or not confirm_password:
+            return Response({'error': 'Both new password and confirmation are required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if new_password != confirm_password:
+            return Response({'error': 'Passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+            
         # Update password
         user.set_password(new_password)
         user.must_change_password = False
+        user.last_password_change = timezone.now()
         user.save()
-
-        # Create audit log
-        from .utils import create_audit_log
-        create_audit_log(
-            request=request,
-            action='PASSWORD_CHANGE',
-            resource_type='USER',
-            resource_id=user.id,
-            description=f'User {user.username} changed their password'
-        )
-
-        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
-
+        
+        return Response({'message': 'Password changed successfully'})
+        
     except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(f"Password change error: {str(e)}")
+        return Response({'error': 'Failed to change password'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Device Distribution API
 @api_view(['GET'])

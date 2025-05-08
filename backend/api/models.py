@@ -197,16 +197,23 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     must_change_password = models.BooleanField(default=True)
-
+    last_password_change = models.DateTimeField(null=True, blank=True)
+    
     USERNAME_FIELD = 'username'
-
     objects = CustomUserManager()
 
     def save(self, *args, **kwargs):
+        # If this is a new user being created
+        if not self.pk:
+            # Set must_change_password to True for new users
+            self.must_change_password = True
+            # Set a default auto-generated password
+            self.set_password(f"auto_{self.username}")
+        
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.username} ({self.email})"
+        return self.username
 
 #Maintenance
 from django.db import models
