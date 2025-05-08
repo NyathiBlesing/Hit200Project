@@ -950,36 +950,52 @@ def get_tokens_for_user(user):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login_view(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
-    print(f"LOGIN DEBUG: username='{username}', password='{password}'")
-    user = authenticate(username=username, password=password)
+    try:
+        username = request.data.get('username')
+        password = request.data.get('password')
+        print(f"LOGIN DEBUG: username='{username}', password='{password}'")
+        
+        if not username or not password:
+            return Response({'error': 'Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if user and user.is_active:
-        tokens = get_tokens_for_user(user)
-        # Only log login for IT Admins
-        if hasattr(user, 'role') and user.role == 'Admin':
-            from .utils import create_audit_log
-            create_audit_log(
-                request=request,
-                action='LOGIN',
-                resource_type='USER',
-                resource_id=user.id,
-                description=f'User {user.username} logged in'
-            )
-        return Response({
-            'access': tokens['access'],
-            'refresh': tokens['refresh'],
-            'user': {
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'role': user.role,
-                'department': user.department,
-            }
-        })
-    else:
-        return Response({'error': 'Invalid credentials'}, status=400)
+        user = authenticate(username=username, password=password)
+
+        if user and user.is_active:
+            # If user has changed their password, clear the must_change_password flag
+            if not user.must_change_password:
+                tokens = get_tokens_for_user(user)
+                # Only log login for IT Admins
+                if hasattr(user, 'role') and user.role == 'Admin':
+                    from .utils import create_audit_log
+                    create_audit_log(
+                        request=request,
+                        action='LOGIN',
+                        resource_type='USER',
+                        resource_id=user.id,
+                        description=f'User {user.username} logged in'
+                    )
+                return Response({
+                    'access': tokens['access'],
+                    'refresh': tokens['refresh'],
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'role': user.role,
+                        'department': user.department,
+                    }
+                })
+            else:
+                return Response({
+                    'error': 'Please change your password first',
+                    'must_change_password': True
+                }, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+    except Exception as e:
+        print(f"Login error: {str(e)}")
+        return Response({'error': 'An error occurred during login'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Password Change API
 @api_view(['POST'])

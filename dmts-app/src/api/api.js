@@ -570,12 +570,37 @@ export const deviceDistributionAPI = {
       return response.data;
     } catch (error) {
       handleApiError(error, "Failed to fetch device distribution");
+      return {
+        status_distribution: {},
+        department_distribution: {},
+        type_distribution: {}
+      };
     }
   }
 };
 
 // Auth API
 export const authAPI = {
+  login: async (credentials) => {
+    try {
+      const response = await axiosInstance.post('auth/login/', credentials);
+      
+      // Store tokens
+      localStorage.setItem('access_token', response.data.access);
+      localStorage.setItem('refresh_token', response.data.refresh);
+      localStorage.setItem('user_id', response.data.user.id);
+      localStorage.setItem('user_role', response.data.user.role);
+      
+      return response.data;
+    } catch (error) {
+      if (error.response?.data?.must_change_password) {
+        // User needs to change password
+        throw new Error('Please change your password first');
+      }
+      handleApiError(error, "Failed to login");
+    }
+  },
+
   changePassword: async (data) => {
     try {
       const response = await axiosInstance.post('auth/change-password/', data);
@@ -600,15 +625,6 @@ export const authAPI = {
   signup: async (userData) => {
     const response = await axios.post(`${BASE_URL}auth/signup/`, userData);
     return response.data;
-  },
-
-  login: async (credentials) => {
-    try {
-      const response = await axios.post(`${BASE_URL}auth/login/`, credentials);
-      return response.data;
-    } catch (error) {
-      handleApiError(error, "Login failed. Please check your credentials.");
-    }
   },
 
   logout: () => {
