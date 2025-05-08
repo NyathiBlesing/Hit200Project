@@ -73,11 +73,11 @@ const OperationsDashboard = () => {
   const [devices, setDevices] = React.useState([]);
   const [maintenances, setMaintenances] = React.useState([]);
   const [deviceTypeData, setDeviceTypeData] = React.useState({
-    labels: ["Desktop", "Laptop", "Projector", "Printer"],
+    labels: [],
     datasets: [
       {
-        data: [2, 3, 1, 1],
-        backgroundColor: ["#2563eb", "#a78bfa", "#22c55e", "#fbbf24"],
+        data: [],
+        backgroundColor: [],
       },
     ],
   });
@@ -98,6 +98,7 @@ const OperationsDashboard = () => {
         setDevices(devicesRes);
         const maintenancesRes = await maintenanceAPI.getMaintenance();
         setMaintenances(maintenancesRes);
+        
         // Count statuses
         const statusLabels = ["Active", "Inactive", "Flagged", "Cleared"];
         const statusCounts = statusLabels.map(status =>
@@ -110,13 +111,50 @@ const OperationsDashboard = () => {
             backgroundColor: ["#22c55e", "#ef4444", "#f59e42", "#6366f1"],
           }],
         });
+
+        // Count device types
+        const typeCounts = {};
+        devicesRes.forEach(device => {
+          if (device.type) {
+            typeCounts[device.type] = (typeCounts[device.type] || 0) + 1;
+          }
+        });
+
+        // Generate colors for each type
+        const colors = [
+          "#2563eb", "#a78bfa", "#22c55e", "#fbbf24",
+          "#db2777", "#10b981", "#8b5cf6", "#ec4899",
+          "#3b82f6", "#16a34a", "#f97316", "#ea580c"
+        ];
+
+        // Create chart data
+        const labels = Object.keys(typeCounts);
+        const data = Object.values(typeCounts);
+        const backgroundColor = colors.slice(0, labels.length);
+
+        setDeviceTypeData({
+          labels,
+          datasets: [{
+            data,
+            backgroundColor,
+          }],
+        });
+
       } catch (err) {
-        // fallback to placeholder data
+        console.error("Error fetching data:", err);
+        // Fallback to placeholder data
         setDeviceStatusData({
           labels: ["Active", "Inactive", "Flagged", "Cleared"],
           datasets: [{
             data: [2, 1, 2, 0], // Placeholder
             backgroundColor: ["#22c55e", "#ef4444", "#f59e42", "#6366f1"],
+          }],
+        });
+        setDeviceTypeData({
+          labels: ["Desktop", "Laptop", "Projector", "Printer"],
+          datasets: [{
+            data: [2, 3, 1, 1], // Placeholder
+            backgroundColor: ["#2563eb", "#a78bfa", "#22c55e", "#fbbf24"],
           }],
         });
       }
@@ -174,12 +212,6 @@ const OperationsDashboard = () => {
           </Grid>
         </Grid>
 
-        <Typography variant="h6" sx={{ mb: 3, color: theme.palette.text.primary, fontWeight: 600 }}>
-          Device Distribution Overview
-        </Typography>
-        
-        <DeviceDistributionChart />
-        
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Box sx={{ p: 2, background: theme.palette.background.paper, borderRadius: 3, boxShadow: 1, height: 340, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
