@@ -980,3 +980,50 @@ def login_view(request):
         })
     else:
         return Response({'error': 'Invalid credentials'}, status=400)
+
+# Password Change API
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def change_password_view(request):
+    try:
+        current_password = request.data.get('current_password')
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+
+        if not current_password or not new_password or not confirm_password:
+            return Response({'error': 'All password fields are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_password != confirm_password:
+            return Response({'error': 'New passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+        
+        # Verify current password
+        if not user.check_password(current_password):
+            return Response({'error': 'Current password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate new password
+        try:
+            validate_password(new_password)
+        except ValidationError as e:
+            return Response({'error': e.messages}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update password
+        user.set_password(new_password)
+        user.must_change_password = False
+        user.save()
+
+        # Create audit log
+        from .utils import create_audit_log
+        create_audit_log(
+            request=request,
+            action='PASSWORD_CHANGE',
+            resource_type='USER',
+            resource_id=user.id,
+            description=f'User {user.username} changed their password'
+        )
+
+        return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

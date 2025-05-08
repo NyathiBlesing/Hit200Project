@@ -29,15 +29,11 @@ const Reports = () => {
 
       switch (reportType) {
         case 'Device':
-          url = 'http://127.0.0.1:8000/api/reports/devices/';
+          url = 'https://hit200project.onrender.com/api/reports/devices/';
           filename = 'device_report.csv';
           break;
-        case 'Issue':
-          url = 'http://127.0.0.1:8000/api/reports/issues/';
-          filename = 'issue_report.csv';
-          break;
         case 'Maintenance':
-          url = 'http://127.0.0.1:8000/api/reports/maintenance/';
+          url = 'https://hit200project.onrender.com/api/reports/maintenance/';
           filename = 'maintenance_report.csv';
           break;
         default:
