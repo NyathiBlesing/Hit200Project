@@ -6,7 +6,7 @@ from .views import (
     CustomUserViewSet, ClearanceViewSet, AssignedDevicesView, ClearanceLogViewSet,
     download_device_report, download_issue_report, download_maintenance_report,
     DeviceBySerialView, NotificationViewSet,
-    login_view, get_device_distribution
+    login_view, get_device_distribution, change_password_view
 )
 
 # Create a single router for all ViewSets
@@ -35,4 +35,5 @@ urlpatterns = [
     path('users/', CustomUserViewSet.as_view({'get': 'list'}), name='users'),
     path('users/<int:pk>/', CustomUserViewSet.as_view({'get': 'retrieve', 'put': 'update', 'delete': 'destroy'}), name='user-detail'),
     path('devices/distribution/', get_device_distribution, name='device_distribution'),
+    path('auth/change-password/', change_password_view, name='change-password'),
 ]
