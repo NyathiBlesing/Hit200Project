@@ -990,17 +990,22 @@ def change_password_view(request):
         new_password = request.data.get('new_password')
         confirm_password = request.data.get('confirm_password')
 
-        if not current_password or not new_password or not confirm_password:
-            return Response({'error': 'All password fields are required'}, status=status.HTTP_400_BAD_REQUEST)
+        if not new_password or not confirm_password:
+            return Response({'error': 'New password fields are required'}, status=status.HTTP_400_BAD_REQUEST)
 
         if new_password != confirm_password:
             return Response({'error': 'New passwords do not match'}, status=status.HTTP_400_BAD_REQUEST)
 
         user = request.user
         
-        # Verify current password
-        if not user.check_password(current_password):
-            return Response({'error': 'Current password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+        # For auto-generated passwords, allow password change without current password
+        if user.must_change_password:
+            # Skip current password check for auto-generated passwords
+            pass
+        else:
+            # Verify current password for regular password changes
+            if not user.check_password(current_password):
+                return Response({'error': 'Current password is incorrect'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Validate new password
         try:
@@ -1024,6 +1029,43 @@ def change_password_view(request):
         )
 
         return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# Device Distribution API
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_device_distribution(request):
+    try:
+        # Get device counts by status
+        device_counts = {
+            'Active': Device.objects.filter(status='Active').count(),
+            'Inactive': Device.objects.filter(status='Inactive').count(),
+            'Maintenance': Device.objects.filter(status='Maintenance').count(),
+            'Cleared': Device.objects.filter(status='Cleared').count(),
+            'Flagged': Device.objects.filter(status='Flagged').count()
+        }
+
+        # Get device counts by department
+        department_counts = {}
+        for device in Device.objects.all():
+            if device.assigned_to and device.assigned_to.department:
+                department = device.assigned_to.department
+                if department in department_counts:
+                    department_counts[department] += 1
+                else:
+                    department_counts[department] = 1
+
+        # Get device types distribution
+        type_counts = Device.objects.values('type').annotate(count=models.Count('type'))
+        type_distribution = {item['type']: item['count'] for item in type_counts}
+
+        return Response({
+            'status_distribution': device_counts,
+            'department_distribution': department_counts,
+            'type_distribution': type_distribution
+        })
 
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

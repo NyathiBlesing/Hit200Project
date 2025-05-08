@@ -24,7 +24,7 @@ import {
   Edit as EditIcon,
 } from '@mui/icons-material';
 import Sidebar from './Sidebar';
-import { userAPI } from '../api/api';
+import { userAPI, authAPI } from '../api/api';
 
 const Settings = () => {
   const [error, setError] = useState(null);
@@ -93,13 +93,25 @@ const Settings = () => {
           showAlert('New passwords do not match', 'error');
           return;
         }
+
+        // For auto-generated passwords, don't require current password
+        const passwordData = {
+          new_password: formData.new_password,
+          confirm_password: formData.confirm_password
+        };
+
+        if (!user.must_change_password) {
+          passwordData.current_password = formData.current_password;
+        }
+
+        await authAPI.changePassword(passwordData);
+        showAlert('Password updated successfully', 'success');
       }
 
       const updateData = {
         username: formData.username,
         email: formData.email,
         phone_number: formData.phone_number,
-        ...(formData.new_password && { password: formData.new_password }),
       };
 
       await userAPI.updateUser(user.id, updateData);
@@ -295,32 +307,6 @@ const Settings = () => {
                 />
               </CardContent>
             </Card>
-
-            {/* Security Settings (Admin Only) */}
-            {user.role === 'Admin' && (
-              <Card sx={{ mt: 3 }}>
-                <CardContent>
-                  <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-                    <SecurityIcon /> Security Settings
-                  </Typography>
-                  <FormControlLabel
-                    control={<Switch defaultChecked color="primary" />}
-                    label="Two-Factor Authentication"
-                    sx={{ mb: 2 }}
-                  />
-                  <FormControlLabel
-                    control={<Switch defaultChecked color="primary" />}
-                    label="Login Activity Notifications"
-                    sx={{ mb: 2 }}
-                  />
-                  <FormControlLabel
-                    control={<Switch defaultChecked color="primary" />}
-                    label="Audit Log Alerts"
-                    sx={{ mb: 2 }}
-                  />
-                </CardContent>
-              </Card>
-            )}
           </Grid>
         </Grid>
       </Box>

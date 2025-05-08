@@ -5,6 +5,7 @@ import BuildIcon from '@mui/icons-material/Build';
 import DevicesIcon from '@mui/icons-material/Devices';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import Sidebar from "../components/Sidebar";
+import { deviceAPI, maintenanceAPI, deviceDistributionAPI } from "../api/api";
 import { Pie, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -16,19 +17,8 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
-import { deviceAPI, maintenanceAPI } from "../api/api";
+import DeviceDistributionChart from "../components/DeviceDistributionChart";
 
-ChartJS.register(
-  ArcElement,
-  ChartTooltip,
-  Legend,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement
-);
-
-// ChartJS registration must come after all imports
 ChartJS.register(
   ArcElement,
   ChartTooltip,
@@ -78,8 +68,6 @@ const StatCard = ({ title, description, icon, color }) => {
   );
 };
 
-// All imports must be at the top of the file (ESLint: import/first)
-
 const OperationsDashboard = () => {
   const theme = useTheme();
   const [devices, setDevices] = React.useState([]);
@@ -103,7 +91,6 @@ const OperationsDashboard = () => {
     ],
   });
 
-  // Update deviceStatusData to only show flagged devices
   React.useEffect(() => {
     async function fetchData() {
       try {
@@ -153,23 +140,6 @@ const OperationsDashboard = () => {
     maintainAspectRatio: false,
   };
 
-  React.useEffect(() => {
-    // Example: fetch devices and update chart data
-    async function fetchData() {
-      try {
-        // Uncomment and use your APIs if available
-        // const devicesRes = await deviceAPI.getDevices();
-        // setDevices(devicesRes);
-        // const maintenancesRes = await maintenanceAPI.getMaintenance();
-        // setMaintenances(maintenancesRes);
-        // // Calculate and set chart data here
-      } catch (err) {
-        // fallback to placeholder data
-      }
-    }
-    fetchData();
-  }, []);
-
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh', background: theme.palette.background.default }}>
       <Sidebar />
@@ -203,6 +173,13 @@ const OperationsDashboard = () => {
             />
           </Grid>
         </Grid>
+
+        <Typography variant="h6" sx={{ mb: 3, color: theme.palette.text.primary, fontWeight: 600 }}>
+          Device Distribution Overview
+        </Typography>
+        
+        <DeviceDistributionChart />
+        
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Box sx={{ p: 2, background: theme.palette.background.paper, borderRadius: 3, boxShadow: 1, height: 340, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>

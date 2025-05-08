@@ -562,16 +562,40 @@ export const clearanceAPI = {
   },
 };
 
+// Device Distribution API
+export const deviceDistributionAPI = {
+  getDistribution: async () => {
+    try {
+      const response = await axiosInstance.get('devices/distribution/');
+      return response.data;
+    } catch (error) {
+      handleApiError(error, "Failed to fetch device distribution");
+    }
+  }
+};
+
 // Auth API
 export const authAPI = {
-  completeSetup: async (token, password) => {
-    const response = await axios.post(`${BASE_URL}/api/auth/setup-account/`, {
-      token,
-      password,
-    });
-    return response.data;
+  changePassword: async (data) => {
+    try {
+      const response = await axiosInstance.post('auth/change-password/', data);
+      return response.data;
+    } catch (error) {
+      handleApiError(error, "Failed to change password");
+    }
   },
 
+  completeSetup: async (token, password) => {
+    try {
+      const response = await axiosInstance.post('auth/complete-setup/', {
+        token,
+        password
+      });
+      return response.data;
+    } catch (error) {
+      handleApiError(error, "Failed to complete setup");
+    }
+  },
 
   signup: async (userData) => {
     const response = await axios.post(`${BASE_URL}auth/signup/`, userData);
@@ -585,11 +609,6 @@ export const authAPI = {
     } catch (error) {
       handleApiError(error, "Login failed. Please check your credentials.");
     }
-  },
-
-  changePassword: async ({ userId, newPassword }) => {
-    const response = await axiosInstance.post('auth/change-password/', { user_id: userId, new_password: newPassword });
-    return response.data;
   },
 
   logout: () => {
