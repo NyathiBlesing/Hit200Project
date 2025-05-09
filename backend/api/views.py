@@ -1,26 +1,29 @@
 from django.shortcuts import render
-
-# Create your views here.
-
-#Devices
-import logging
-from rest_framework import viewsets, status, permissions
-from rest_framework.response import Response
 from django.contrib.auth import get_user_model, authenticate
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes, action
-from .models import Device, CustomUser, AuditLog, Notification
-from .serializers import DeviceSerializer, AuditLogSerializer, NotificationSerializer, CustomUserSerializer, ClearanceSerializer
-from .utils import create_audit_log
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.conf import settings
+from rest_framework import viewsets, status, permissions
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Device, Issue, Maintenance, CustomUser, AuditLog, Notification, ClearanceLog
+from .serializers import DeviceSerializer, IssueSerializer, MaintenanceSerializer, CustomUserSerializer, AuditLogSerializer, NotificationSerializer, ClearanceSerializer
+from .utils import create_audit_log
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+from django.db import transaction
+import logging
+from django.utils import timezone
+import csv
+from datetime import timedelta
+import secrets, string
+from django.http import HttpResponse
 
-
+# Devices
 class DeviceBySerialView(APIView):
     def get(self, request, serial_number):
         try:
@@ -223,9 +226,9 @@ class AssignedDevicesView(APIView):
         # Serialize the devices
         serializer = DeviceSerializer(devices, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
-#Issues    
+
+
+# Issues
 from rest_framework import viewsets, status, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -389,48 +392,8 @@ class IssueViewSet(viewsets.ModelViewSet):
         except ValueError:
             return Response({'error': 'Invalid user ID'}, status=status.HTTP_400_BAD_REQUEST)
 
-#Users
-from rest_framework import viewsets
-from .models import CustomUser
-from .serializers import CustomUserSerializer
 
-class CustomUserViewSet(viewsets.ModelViewSet):
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def perform_create(self, serializer):
-        user = serializer.save()
-        create_audit_log(
-            request=self.request,
-            action='CREATE',
-            resource_type='USER',
-            resource_id=user.id,
-            description=f'Created user {user.username}'
-        )
-
-    def perform_update(self, serializer):
-        user = serializer.save()
-        create_audit_log(
-            request=self.request,
-            action='UPDATE',
-            resource_type='USER',
-            resource_id=user.id,
-            description=f'Updated user {user.username}'
-        )
-
-    def perform_destroy(self, instance):
-        username = instance.username
-        instance.delete()
-        create_audit_log(
-            request=self.request,
-            action='DELETE',
-            resource_type='USER',
-            resource_id=instance.id,
-            description=f'Deleted user {username}'
-        )
-
-#Maintenance
+# Maintenance
 from rest_framework.viewsets import ModelViewSet
 from .models import Maintenance
 from .serializers import MaintenanceSerializer
@@ -473,7 +436,50 @@ class MaintenanceViewSet(ModelViewSet):
             description=f'Deleted maintenance for device {device_info}'
         )
 
-#Logs
+
+# Users
+from rest_framework import viewsets
+from .models import CustomUser
+from .serializers import CustomUserSerializer
+
+class CustomUserViewSet(viewsets.ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user = serializer.save()
+        create_audit_log(
+            request=self.request,
+            action='CREATE',
+            resource_type='USER',
+            resource_id=user.id,
+            description=f'Created user {user.username}'
+        )
+
+    def perform_update(self, serializer):
+        user = serializer.save()
+        create_audit_log(
+            request=self.request,
+            action='UPDATE',
+            resource_type='USER',
+            resource_id=user.id,
+            description=f'Updated user {user.username}'
+        )
+
+    def perform_destroy(self, instance):
+        username = instance.username
+        instance.delete()
+        create_audit_log(
+            request=self.request,
+            action='DELETE',
+            resource_type='USER',
+            resource_id=instance.id,
+            description=f'Deleted user {username}'
+        )
+
+
+# Audit Logs
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework import serializers
 from django.utils import timezone
@@ -598,121 +604,8 @@ class AuditLogViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-#Reports
-import csv
-from django.http import HttpResponse
-from .models import Device, Issue, Maintenance
 
-# Device Report
-def download_device_report(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="device_report.csv"'
-
-    writer = csv.writer(response)
-    writer.writerow(['ID', 'Name', 'Serial Number', 'Type', 'Status', 'Location'])
-
-    devices = Device.objects.all()
-    for device in devices:
-        writer.writerow([device.id, device.name, device.serial_number, device.type, device.status, device.location])
-
-    return response
-
-# Issue Report
-def download_issue_report(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="issue_report.csv"'
-
-    writer = csv.writer(response)
-    writer.writerow(['ID', 'Device', 'User', 'Description', 'Status', 'Created At'])
-
-    issues = Issue.objects.all()
-    for issue in issues:
-        writer.writerow([
-            issue.id,
-            issue.device.name,
-            issue.user.username if issue.user else 'N/A',
-            issue.description,
-            issue.status,
-            issue.created_at,
-        ])
-
-    return response
-
-# Maintenance Report
-def download_maintenance_report(request):
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="maintenance_report.csv"'
-
-    writer = csv.writer(response)
-    writer.writerow(['ID', 'Device', 'Maintenance Date', 'Notes'])
-
-    maintenance_records = Maintenance.objects.all()
-    for record in maintenance_records:
-        writer.writerow([
-            record.id,
-            record.device.name,
-            record.maintenance_date,
-            record.notes,
-        ])
-
-    return response
-
-#Clearance
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from .models import ClearanceLog
-from .serializers import ClearanceSerializer
-
-class ClearanceLogViewSet(viewsets.ReadOnlyModelViewSet):
-    """ViewSet for listing and retrieving clearance logs."""
-    queryset = ClearanceLog.objects.select_related('device', 'cleared_by').all().order_by('-date_cleared')
-    serializer_class = ClearanceSerializer
-    permission_classes = [permissions.IsAuthenticated]
-from .models import Device
-
-class ClearanceViewSet(viewsets.ViewSet):
-
-
-    def list(self, request):
-        """Fetch devices that are flagged for clearance (Retirement or Disposal)"""
-        flagged_devices = Device.objects.filter(status__in=["Retirement", "Disposal"])
-        return Response([{"id": d.id, "name": d.name, "serial_number": d.serial_number, "status": d.status} for d in flagged_devices])
-
-    @action(detail=False, methods=['post'])
-    def clear_device(self, request):
-        """Mark a device as cleared"""
-        device_id = request.data.get("device_id")
-
-        # Only allow users with role 'Operations' to clear devices
-        if not hasattr(request.user, 'role') or request.user.role != 'Operations':
-            return Response({'error': 'Only Operations staff are allowed to clear devices.'}, status=status.HTTP_403_FORBIDDEN)
-
-        try:
-            device = Device.objects.get(id=device_id)
-
-            # Mark device as cleared
-            device.status = "Cleared"
-            device.save()
-
-            # Create an audit log for the clearance action
-            from .utils import create_audit_log
-            create_audit_log(
-                request=request,
-                action='CLEAR',
-                resource_type='DEVICE',
-                resource_id=device.id,
-                resource_name=device.name,
-                description=f'Cleared device {device.name} (SN: {device.serial_number})',
-                status='SUCCESS'
-            )
-
-            return Response({"message": f"Device {device.name} cleared successfully!"}, status=status.HTTP_200_OK)
-
-        except Device.DoesNotExist:
-            return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
-
-#Notifications
+# Notifications
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 
@@ -919,7 +812,7 @@ class SignupView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
-#Authentication
+# Authentication
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
@@ -1059,3 +952,119 @@ def get_device_distribution(request):
 
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# Clearance
+from rest_framework import viewsets, status
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from .models import ClearanceLog
+from .serializers import ClearanceSerializer
+
+class ClearanceLogViewSet(viewsets.ReadOnlyModelViewSet):
+    """ViewSet for listing and retrieving clearance logs."""
+    queryset = ClearanceLog.objects.select_related('device', 'cleared_by').all().order_by('-date_cleared')
+    serializer_class = ClearanceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+from .models import Device
+
+class ClearanceViewSet(viewsets.ViewSet):
+
+
+    def list(self, request):
+        """Fetch devices that are flagged for clearance (Retirement or Disposal)"""
+        flagged_devices = Device.objects.filter(status__in=["Retirement", "Disposal"])
+        return Response([{"id": d.id, "name": d.name, "serial_number": d.serial_number, "status": d.status} for d in flagged_devices])
+
+    @action(detail=False, methods=['post'])
+    def clear_device(self, request):
+        """Mark a device as cleared"""
+        device_id = request.data.get("device_id")
+
+        # Only allow users with role 'Operations' to clear devices
+        if not hasattr(request.user, 'role') or request.user.role != 'Operations':
+            return Response({'error': 'Only Operations staff are allowed to clear devices.'}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            device = Device.objects.get(id=device_id)
+
+            # Mark device as cleared
+            device.status = "Cleared"
+            device.save()
+
+            # Create an audit log for the clearance action
+            from .utils import create_audit_log
+            create_audit_log(
+                request=request,
+                action='CLEAR',
+                resource_type='DEVICE',
+                resource_id=device.id,
+                resource_name=device.name,
+                description=f'Cleared device {device.name} (SN: {device.serial_number})',
+                status='SUCCESS'
+            )
+
+            return Response({"message": f"Device {device.name} cleared successfully!"}, status=status.HTTP_200_OK)
+
+        except Device.DoesNotExist:
+            return Response({"error": "Device not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+# Reports
+import csv
+from django.http import HttpResponse
+from .models import Device, Issue, Maintenance
+
+# Device Report
+def download_device_report(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="device_report.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['ID', 'Name', 'Serial Number', 'Type', 'Status', 'Location'])
+
+    devices = Device.objects.all()
+    for device in devices:
+        writer.writerow([device.id, device.name, device.serial_number, device.type, device.status, device.location])
+
+    return response
+
+# Issue Report
+def download_issue_report(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="issue_report.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['ID', 'Device', 'User', 'Description', 'Status', 'Created At'])
+
+    issues = Issue.objects.all()
+    for issue in issues:
+        writer.writerow([
+            issue.id,
+            issue.device.name,
+            issue.user.username if issue.user else 'N/A',
+            issue.description,
+            issue.status,
+            issue.created_at,
+        ])
+
+    return response
+
+# Maintenance Report
+def download_maintenance_report(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="maintenance_report.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['ID', 'Device', 'Maintenance Date', 'Notes'])
+
+    maintenance_records = Maintenance.objects.all()
+    for record in maintenance_records:
+        writer.writerow([
+            record.id,
+            record.device.name,
+            record.maintenance_date,
+            record.notes,
+        ])
+
+    return response
