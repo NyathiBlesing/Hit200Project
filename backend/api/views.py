@@ -847,88 +847,77 @@ class SignupView(APIView):
                     status=status.HTTP_403_FORBIDDEN
                 )
 
+            # Validate required fields
+            required_fields = ['username', 'email', 'password', 'role']
+            for field in required_fields:
+                if not request.data.get(field):
+                    return Response(
+                        {'error': f'{field} is required'}, 
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
             # Validate password
+            password = request.data.get('password')
             try:
-                validate_password(request.data.get('password'))
+                validate_password(password)
             except ValidationError as e:
                 return Response({'error': e.messages}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Check if username exists
-            if CustomUser.objects.filter(username=request.data.get('username')).exists():
-                return Response({'error': 'Username already exists'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Check if email exists
-            if CustomUser.objects.filter(email=request.data.get('email')).exists():
-                return Response({'error': 'Email already exists'}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Create admin user
-            username = request.data.get('username')
-            email = request.data.get('email')
-            password = request.data.get('password')
-            print(f"SIGNUP DEBUG: username='{username}', password='{password}'")
-            user = CustomUser(
-                email=email,
-                username=username,
-                role='Admin',
-                is_staff=True
+            # Create user
+            user = CustomUser.objects.create(
+                username=request.data.get('username'),
+                email=request.data.get('email'),
+                role=request.data.get('role'),
+                is_active=True,
+                is_staff=request.data.get('role') == 'Admin',
+                must_change_password=False  # Admins don't need to change password
             )
-            user.set_password(password)
+            
+            # Set password for admin
+            if user.role == 'Admin':
+                user.set_password(password)
+                user.save()
+                return Response(
+                    {
+                        'message': 'Admin user created successfully',
+                        'user': {
+                            'id': user.id,
+                            'username': user.username,
+                            'email': user.email,
+                            'role': user.role
+                        }
+                    },
+                    status=status.HTTP_201_CREATED
+                )
+            
+            # For non-admin users, generate a temporary password
+            import secrets, string
+            alphabet = string.ascii_letters + string.digits
+            temp_password = ''.join(secrets.choice(alphabet) for _ in range(10))
+            
+            user.set_password(temp_password)
+            user.must_change_password = True
             user.save()
 
-            # Create token for the new admin
-            refresh = RefreshToken.for_user(user)
-            
-            return Response({
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'role': user.role
+            return Response(
+                {
+                    'message': 'User created successfully. Temporary password generated.',
+                    'user': {
+                        'id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                        'role': user.role
+                    },
+                    'temporary_password': temp_password
                 },
-                'access': str(refresh.access_token),
-                'refresh': str(refresh)
-            }, status=status.HTTP_201_CREATED)
+                status=status.HTTP_201_CREATED
+            )
 
         except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-class NotificationViewSet(viewsets.ModelViewSet):
-    serializer_class = NotificationSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user).order_by('-created_at')
-
-    def destroy(self, request, pk=None):
-        notification = self.get_object()
-        if notification.recipient != request.user:
-            return Response({'error': "You don't have permission to delete this notification."}, status=status.HTTP_403_FORBIDDEN)
-        notification.delete()
-        return Response({'status': 'deleted'})
-
-    def delete(self, request, *args, **kwargs):
-        # Custom bulk delete for notifications list endpoint
-        Notification.objects.filter(recipient=request.user).delete()
-        return Response({'status': 'all deleted'})
-
-    @action(detail=True, methods=['post'])
-    def mark_as_read(self, request, pk=None):
-        notification = self.get_object()
-        if notification.recipient != request.user:
             return Response(
-                {"error": "You don't have permission to modify this notification"},
-                status=status.HTTP_403_FORBIDDEN
+                {'error': str(e)}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
-        notification.read = True
-        notification.save()
-        return Response({"status": "success"})
-
-    @action(detail=False, methods=['post'])
-    def mark_all_as_read(self, request):
-        self.get_queryset().update(read=True)
-        return Response({"status": "success"})
 
 #Authentication
 from rest_framework.response import Response
