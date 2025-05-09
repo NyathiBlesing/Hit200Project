@@ -608,6 +608,44 @@ class AuditLogViewSet(viewsets.ModelViewSet):
 # Notifications
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from .models import Notification
+from .serializers import NotificationSerializer
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    serializer_class = NotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Notification.objects.filter(recipient=self.request.user).order_by('-created_at')
+
+    def destroy(self, request, pk=None):
+        notification = self.get_object()
+        if notification.recipient != request.user:
+            return Response({'error': "You don't have permission to delete this notification."}, status=status.HTTP_403_FORBIDDEN)
+        notification.delete()
+        return Response({'status': 'deleted'})
+
+    def delete(self, request, *args, **kwargs):
+        # Custom bulk delete for notifications list endpoint
+        Notification.objects.filter(recipient=request.user).delete()
+        return Response({'status': 'all deleted'})
+
+    @action(detail=True, methods=['post'])
+    def mark_as_read(self, request, pk=None):
+        notification = self.get_object()
+        if notification.recipient != request.user:
+            return Response(
+                {"error": "You don't have permission to modify this notification"},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        notification.read = True
+        notification.save()
+        return Response({"status": "success"})
+
+    @action(detail=False, methods=['post'])
+    def mark_all_as_read(self, request):
+        self.get_queryset().update(read=True)
+        return Response({"status": "success"})
 
 class AccountSetupView(APIView):
     permission_classes = [permissions.AllowAny]
