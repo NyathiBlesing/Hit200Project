@@ -95,11 +95,11 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'hopper.proxy.rlwy.net',  # From URL
-        'PORT': 36872,                     # From URL
-        'USER': 'root',                    # From URL
-        'PASSWORD': 'glGJdTDCWaiuqihepNAyHNHzZPixOSUX',  
-        'NAME': 'railway',                 # From URL
+        'HOST': 'yamabiko.proxy.rlwy.net',  
+        'PORT': 21751,                     
+        'USER': 'root',                   
+        'PASSWORD': 'KtzmwbXMGrkFJsNOAoSBhCxyAHvEtSLU',  
+        'NAME': 'railway',                 
         }
     }
 
