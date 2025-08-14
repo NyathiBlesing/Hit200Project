@@ -1,5 +1,7 @@
 Device Tracking and Management System – HIT200 Project
 
+Click this link to access Login page:https://hit200-project.vercel.app
+
 This project is a comprehensive Device Tracking and Management System designed for the Harare Institute of Technology. It focuses on managing and tracking electronic gadgets such as laptops, printers, projectors, and other devices allocated to employees.
 
 The system enables the seamless registration of new devices, assignment to staff members, and tracking during maintenance or repairs — ensuring accountability and efficiency across departments.
